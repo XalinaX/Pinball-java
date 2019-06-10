@@ -537,7 +537,7 @@ public class Game extends BasicGameState{
 		}
 		//start the collisions
 		if(start==1){
-			if (Game.count%200==0) {
+			if (Game.count%250==0) {
 				Game.songs.play();
 			}
 			Game.count++;
