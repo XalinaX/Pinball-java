@@ -15,8 +15,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Songs {
+	protected int[] played = new int[6];
 	
-	static int linenum = 1;
+	public static int linenum = 1;
 	static Clip clip;
 	static String line;
 	static HashMap<String, String> notesmap;
@@ -57,7 +58,7 @@ public class Songs {
 		
 	}
 	public void play(){
-		try (Stream<String> lines = Files.lines(Paths.get("./songs/GaoBaiQiQiu.txt"))){
+		try (Stream<String> lines = Files.lines(Paths.get("./songs/JuHuaTai"))){
 		    line = lines.skip(linenum-1).findFirst().get();
 			audioInputStream = AudioSystem.getAudioInputStream(new File(notesmap.get(line)).getAbsoluteFile());
 			clip = AudioSystem.getClip();
@@ -66,8 +67,11 @@ public class Songs {
 		} catch (NoSuchElementException e) {
 			Game.songend = true;
 		} catch (LineUnavailableException e) {
+
 		} catch (UnsupportedAudioFileException e) {
+
 		} catch (IOException e) {
+
 		} 
 		linenum++;
 	}

@@ -95,6 +95,7 @@ public class Game extends BasicGameState{
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		Songs.linenum=1;
 		mode=0;
 		count=0;
 		songtip = new Image("./image/songtip.gif");
@@ -580,7 +581,7 @@ public class Game extends BasicGameState{
 			}
 			//start the collisions
 			if(start==1){
-				if (Game.count%250==0) {
+				if (Game.count%300==0) {
 					Game.songs.play();
 				}
 				Game.count++;
