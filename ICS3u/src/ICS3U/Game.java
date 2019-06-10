@@ -86,7 +86,7 @@ public class Game extends BasicGameState{
 	public static boolean songend;
 	
 	public Game(int game) {
-		username="";
+		username="Jennifer";
 		songs=new Songs();
 	}
 
