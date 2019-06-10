@@ -18,7 +18,6 @@ public class Ball {
 	protected boolean stop;
 	protected boolean firstTime;
 	protected boolean hasCollide;
-	
 	/**
 	 * initialize
 	 * @param x - the centerX
@@ -75,6 +74,7 @@ public class Ball {
 	Vec2d N1;
 	
 	public void collide(Vec2d l, boolean elastic) {
+		
 		hasCollide=true;
 		if (elastic) {
 			double ratio = Math.sqrt(1/(l.x*l.x+l.y*l.y));
@@ -85,6 +85,10 @@ public class Ball {
 			this.vy=tang.y*ratio;
 		}
 		else {
+			if (Game.count%3==0) {
+				Game.songs.play();
+			}
+			Game.count++;
 			v1 = new Vec2d((float)this.vx,(float)this.vy);
 			vr1 = new Vec2d(-v1.x,-v1.y);
 			proj1 = new Vec2d(l.x*vr1.dot(l)/l.dot(l),l.y*vr1.dot(l)/l.dot(l));

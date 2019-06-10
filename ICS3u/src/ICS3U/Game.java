@@ -75,9 +75,13 @@ public class Game extends BasicGameState{
 	public static boolean draw;
 	public static Image over;
 	public static Image over1;
+
+	public static Songs songs;
+	public static int count;
 	
 	public Game(int game) {
 		username="";
+		songs=new Songs();
 	}
 
 	/**
@@ -85,6 +89,7 @@ public class Game extends BasicGameState{
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		count=0;
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
 		off = new Image("./image/sound/off.gif");
