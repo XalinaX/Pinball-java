@@ -723,14 +723,14 @@ public class Game extends BasicGameState{
 			}
 		}
 		else if (mode==2) {
-			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
-					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
-				mouseDown=true;
-			}else if (mouseDown) {
+//			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
+//					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
+//				mouseDown=true;
+//			}else if (mouseDown) {
 				mouseDown=false;
 				songend=false;
 				mode=1;
-			}
+			//}
 		}
 	}
 
