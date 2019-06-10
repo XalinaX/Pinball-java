@@ -63,7 +63,7 @@ public class Rule extends BasicGameState {
 		font.drawString(40, i+220,"BALL");
 		font.drawString(40, i+250, "- The mass of the small ball is one,", Color.lightGray);
 		font.drawString(40, i+280, "  the mass of the large ball if two.", Color.lightGray);
-		font.drawString(40, i+310, "- There are 8 balls at the beginning.", Color.lightGray);
+		font.drawString(40, i+310, "- There are 9 balls at the beginning.", Color.lightGray);
 		
 		font.drawString(40, i+345,"BLOCK");
 		font.drawString(40, i+375, "- When collide with balls,", Color.lightGray);
@@ -106,7 +106,7 @@ public class Rule extends BasicGameState {
 			i-=2;
 		input = gc.getInput();
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			System.out.println("mouse clicked");
+			
 			if (Mouse.getX() < 450 && Mouse.getX() > 250 && 1200-Mouse.getY()> 1085 && 1200-Mouse.getY() < 1168) {
 				sbg.enterState(lastState);
 			}

@@ -78,6 +78,12 @@ public class Game extends BasicGameState{
 
 	public static Songs songs;
 	public static int count;
+	public static int mode;
+	public static Color transparentGray;
+	public static Image songtip;
+	public static Image songtip1;
+	public static Image go;
+	public static boolean songend;
 	
 	public Game(int game) {
 		username="";
@@ -89,7 +95,14 @@ public class Game extends BasicGameState{
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		mode=0;
 		count=0;
+		songtip = new Image("./image/songtip.gif");
+		songtip1 = new Image("./image/songtip1.gif");
+		go = new Image("./image/go.gif");
+		transparentGray = new Color(100,100,100,230);
+		songend=false;
+		
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
 		off = new Image("./image/sound/off.gif");
@@ -125,6 +138,7 @@ public class Game extends BasicGameState{
 			disappears[i-1]=new Image(s);
 		}
 		
+		
 		awtFont = new java.awt.Font("Arial", java.awt.Font.BOLD, 20);
 		font = new TrueTypeFont(awtFont, false);
 		awtFont1 = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 35);
@@ -150,7 +164,7 @@ public class Game extends BasicGameState{
 
 		//add the balls
 		balls = new LinkedList<Ball>();
-		for (int i=0;i<8;i++) {
+		for (int i=0;i<9;i++) {
 			balls.add(new Ball(200+i*40,100,0,1.1));
 		}
 		
@@ -171,6 +185,7 @@ public class Game extends BasicGameState{
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		
 		g.setFont(font1);
 		g.setColor(new Color(200,210,250));
 		g.drawString("player:",50,130);
@@ -310,372 +325,411 @@ public class Game extends BasicGameState{
 		if (fireballOn) {
 			fireball.draw(fx,fy,fwidth,fheight);
 		}
+		
 		g.setColor(Color.white);
 		g.drawString(Integer.toString(stopCount), 70, 40);
 		g.drawString(Integer.toString(start), 70, 60);
+		
+		if (mode==0) {
+			g.setColor(transparentGray);
+			g.fillRect(0, 0, 700, 1200);
+			songtip.draw(0,160,700,680);
+			go.draw(200,900,300,200);
+		}else if(mode==2){
+			g.setColor(transparentGray);
+			g.fillRect(0, 0, 700, 1200);
+			songtip1.draw(50,200,600,130);
+			go.draw(200,800,300,200);
+		}
 	}
 
 	/**
 	 * update the data of the game and call render again
 	 */
+	
+	boolean mouseDown=false;
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		gameover1=false;
-		for (int ind=0;ind<polyblocks.size();ind++) {
-			if (polyblocks.get(ind).poly.getCenterY()<260) {
-				gameover=true;
-			}
-			if (polyblocks.get(ind).poly.getCenterY()<370) {
-				gameover1=true;
-			}
-		}
-		for (int ind=0;ind<cirblocks.size();ind++) {
-			if (cirblocks.get(ind).cir.getCenterY()<260) {
-				gameover=true;
-			}
-			if (cirblocks.get(ind).cir.getCenterY()<370) {
-				gameover1=true;
+		if (mode==0) {
+			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
+					1200-Mouse.getY()>930&&1200-Mouse.getY()<1070) {
+				mouseDown=true;
+			}else if (mouseDown) {
+				mouseDown=false;
+				mode=1;
 			}
 		}
-		for (int ind=0;ind<specialblocks.size();ind++) {
-			if (specialblocks.get(ind).yi<260) {
-				specialblocks.remove(specialblocks.get(ind));
-			}
-		}
-		xpos=Mouse.getX();
-		ypos=1200-Mouse.getY();
-		Input input = gc.getInput();
-		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)&&((ypos>0 && ypos<60&&((xpos>0&&xpos<340)||(xpos>640&&xpos<700)))||
-				(start!=1&&start!=2&&ypos>1110 && ypos<1190&&((xpos>10&&xpos<90)||(xpos<690&&xpos>610))))) {
-			clicked=true;
-		}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
-			if (xpos>640 && xpos<700) {
-				sbg.enterState(PinBall.exit);
-			}else if (xpos>0 && xpos<60){
-				if (soundOn) {
-					soundOn=false;
-				}else {
-					soundOn=true;
+		else if (mode==1) {
+			gameover1=false;
+			for (int ind=0;ind<polyblocks.size();ind++) {
+				if (polyblocks.get(ind).poly.getCenterY()<260) {
+					gameover=true;
 				}
-			}else if (xpos>70 && xpos<130) {
-				Leaderboard.lastState = PinBall.game;
-				sbg.getState(PinBall.leaderboard).init(gc, sbg);
-				sbg.enterState(PinBall.leaderboard);
-			}else if (xpos>140 && xpos<200) {
-				Rule.lastState=PinBall.game;
-				sbg.enterState(PinBall.rule);
-			}
-			else if (xpos>210 && xpos<270) {
-				sbg.enterState(PinBall.login);
-			}else if (xpos>280 && xpos<340) {
-				sbg.getState(PinBall.game).init(gc, sbg);
-			}
-			clicked=false;
-		}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>1110 && ypos<1190&&start!=1&&start!=2){
-			if (xpos>10&&xpos<90) {
-				if (boomOn) {
-					boomOn=false;
-					float x, y;
-					int i = (int) (Math.random() * (polyblocks.size() + cirblocks.size() - 1));
-					if (i < polyblocks.size()) {
-						x = polyblocks.get(i).poly.getCenterX();
-						y = polyblocks.get(i).poly.getCenterY();
-						polyblocks.remove(i);
-					} else {
-						x = cirblocks.get(i - polyblocks.size()).cir.getCenterX();
-						y = cirblocks.get(i - polyblocks.size()).cir.getCenterY();
-						cirblocks.remove(i - polyblocks.size());
-					}
-					specialblocks.add(new SpecialBlock(x, y, true, true));
-				}
-			}else if (xpos<690&&xpos>610) {
-				if (shiningOn) {
-					shiningOn = false;
-					fireballOn=true;
+				if (polyblocks.get(ind).poly.getCenterY()<370) {
+					gameover1=true;
 				}
 			}
-			clicked=false;
-		}
-		if (fireballOn) {
-			if(fx>706) {
-				fireballOn=false;
-				for (int ind=0;ind<polyblocks.size();ind++) {
-					PolyBlock p = polyblocks.get(ind);
-					p.setLocation(-110);
+			for (int ind=0;ind<cirblocks.size();ind++) {
+				if (cirblocks.get(ind).cir.getCenterY()<260) {
+					gameover=true;
 				}
-				
-				for (int ind=0;ind<cirblocks.size();ind++) {
-					CircleBlock d = cirblocks.get(ind);
-					d.setLocation(-110);
-				}
-				for (int i1=0; i1<specialblocks.size(); i1++) {
-					SpecialBlock s = specialblocks.get(i1);
-					s.setLocation(-110);
-				} 
-				for (int i=0; i<disappear.size(); i++) {
-					disappearPos.get(i).y-=110;
+				if (cirblocks.get(ind).cir.getCenterY()<370) {
+					gameover1=true;
 				}
 			}
-			fx+=2;
-			deleteLine();
-		}
-		if (start==2) {
-			
-			stopCount=0;
-			for (int i=0; i<balls.size(); i++) {
-				Ball c = balls.get(i);
-				c.px+=c.vx;
-				c.py+=c.vy;
-				c.cir.setCenterX(c.px);
-				c.cir.setCenterY(c.py);
-				for (int ind=0; ind<walls.size(); ind++) {
-					Wall w = walls.get(ind);
-					if (ind==2) {
-						if (c.py>350) {
-							if (c.iscollideWithWall(w.vertex)) {
-								c.collide(collision,w.elastic);
-								break;
-							}
-						}
-					}else {
-						if (c.iscollideWithWall(w.vertex)) {
-							c.collide(collision,w.elastic);
-							break;
-						}
-					}
-				}
-				for (int ind=0; ind<balls.size(); ind++) {
-					Ball c1 = balls.get(ind);
-					if ((10/27.0*c1.px+2300/27.0>=c1.py || 3100/9.0-10/27.0*c1.px>=c1.py) && c1.px>=55 && c1.px<=645) {
-						if (c!=c1) {
-							c.collideWithBall(c1);
-						}
-					}
-					if (c.py>=180 && c.py<=220 && c.px<450 && c.px>250) {
-						c.px-=c.vx;
-						c.py-=c.vy;
-						c.cir.setCenterX(c.px);
-						c.cir.setCenterY(c.py);
-					}
-					if ((10/27.0*c.px+2300/27.0<c.py+c.radius&&350>=c.px&&50<c.px) || (3100/9.0-10/27.0*c.px<c.py+c.radius&&350<=c.px&&c.px<650)) {
-						c.py-=2;
-						c.cir.setCenterY(c.py);
-					}
-				}
-				if (c.py<0) {
-					c.stop=true;
-				}
-				if (c.px<c.radius) {
-					c.px=c.radius;
-					c.cir.setCenterX(c.px);
-				}else if (c.px>700-c.radius) {
-					c.px=700-c.radius;
-					c.cir.setCenterX(c.px);
-				}
-				if (c.py<=c.radius) {
-					c.py=c.radius;
-					c.cir.setCenterY(c.py);
-				}else if (c.py>1200-c.radius) {
-					c.py=1200-c.radius;
-					c.cir.setCenterY(c.py);
-				}
-				if (c.px==Float.NaN || c.py==Float.NaN) {
-					c.setLocation(100, 50);
-					c.setVelocity(0.6,0.6);
-				}
-				if (c.vx==Double.NaN || c.vy==Double.NaN) {
-					c.setLocation(100, 100);
-					c.setVelocity(0.6,0.6);
-				}
-				if (c.py<=80 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))){
-					c.vy+=0.0025;
-				}
-				if ((c.px<35 || c.px>665) && (c.vy>-0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
-					c.vy-=0.0015;
-				}
-				if (c.stop) {
-					stopCount++;
+			for (int ind=0;ind<specialblocks.size();ind++) {
+				if (specialblocks.get(ind).yi<260) {
+					specialblocks.remove(specialblocks.get(ind));
 				}
 			}
-			if (stopCount==balls.size()) {
-				start=-1;
-				for (int ind=0;ind<polyblocks.size();ind++) {
-					polyblocks.get(ind).setLocation(110);
-				}
-				
-				for (int ind=0;ind<cirblocks.size();ind++) {
-					cirblocks.get(ind).setLocation(110);
-				}
-				for (int i1=0; i1<specialblocks.size(); i1++) {
-					specialblocks.get(i1).setLocation(110);
-				}
-				num = (int)(Math.random()*6+1);
-				generateBlocks(num, 970,1015);
-			}
-		}
-		//mouse clicked
-		if (Mouse.isButtonDown(0) && start!=1&& start!=2) {
-			start=-1;
 			xpos=Mouse.getX();
 			ypos=1200-Mouse.getY();
-			if (ypos>225 && ypos<1050) {
-				start=0;
-				stopCount=0;
-			}
-		}
-		//mouse released
-		else if (start==0) {
-			start=1;
-			stopCount=0;
-			for (int i=0; i<balls.size(); i++) {
-				balls.get(i).setVelocity(xpos-350, ypos-200);
-				balls.get(i).stop=false;
-				balls.get(i).firstTime=true;
-				time=0;
-				num=300;
-			}
-		}
-		//start the collisions
-		if(start==1){
-			if (Game.count%250==0) {
-				Game.songs.play();
-			}
-			Game.count++;
-			stopCount=0;
-			for (int i=0; i<balls.size(); i++) {
-				time++;
-				if(!(i*i*80+i*100<time)) {
-					break;
+			Input input = gc.getInput();
+			if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)&&((ypos>0 && ypos<60&&((xpos>0&&xpos<340)||(xpos>640&&xpos<700)))||
+					(start!=1&&start!=2&&ypos>1110 && ypos<1190&&((xpos>10&&xpos<90)||(xpos<690&&xpos>610))))) {
+				clicked=true;
+			}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
+				if (xpos>640 && xpos<700) {
+					sbg.enterState(PinBall.exit);
+				}else if (xpos>0 && xpos<60){
+					if (soundOn) {
+						soundOn=false;
+					}else {
+						soundOn=true;
+					}
+				}else if (xpos>70 && xpos<130) {
+					Leaderboard.lastState = PinBall.game;
+					sbg.getState(PinBall.leaderboard).init(gc, sbg);
+					sbg.enterState(PinBall.leaderboard);
+				}else if (xpos>140 && xpos<200) {
+					Rule.lastState=PinBall.game;
+					sbg.enterState(PinBall.rule);
 				}
-				Ball c = balls.get(i);
-				if (c.firstTime) {
-					c.setLocation(350,220+c.radius);
-					c.firstTime=false;
+				else if (xpos>210 && xpos<270) {
+					sbg.enterState(PinBall.login);
+				}else if (xpos>280 && xpos<340) {
+					sbg.getState(PinBall.game).init(gc, sbg);
 				}
-				if (c.vy<0 && c.px>55 && c.px<645) {
-					c.vy+=0.003;
-				}
-				else if (c.vy>=0 && c.px>55 && c.px<645 && c.hasCollide) {
-					if (c.py>=350 && c.py<=1140 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
-						c.vy+=0.003;
-					}else if (c.py<=80 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))){
-						c.vy+=0.0025;
-					}else if(c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1)) {
-						c.vy+=0.0015;
+				clicked=false;
+			}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>1110 && ypos<1190&&start!=1&&start!=2){
+				if (xpos>10&&xpos<90) {
+					if (boomOn) {
+						boomOn=false;
+						float x, y;
+						int i = (int) (Math.random() * (polyblocks.size() + cirblocks.size() - 1));
+						if (i < polyblocks.size()) {
+							x = polyblocks.get(i).poly.getCenterX();
+							y = polyblocks.get(i).poly.getCenterY();
+							polyblocks.remove(i);
+						} else {
+							x = cirblocks.get(i - polyblocks.size()).cir.getCenterX();
+							y = cirblocks.get(i - polyblocks.size()).cir.getCenterY();
+							cirblocks.remove(i - polyblocks.size());
+						}
+						specialblocks.add(new SpecialBlock(x, y, true, true));
+					}
+				}else if (xpos<690&&xpos>610) {
+					if (shiningOn) {
+						shiningOn = false;
+						fireballOn=true;
 					}
 				}
-				if ((c.px<35 || c.px>665) && (c.vy>-0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
-					c.vy-=0.0015;
+				clicked=false;
+			}
+			if (fireballOn) {
+				if(fx>706) {
+					fireballOn=false;
+					for (int ind=0;ind<polyblocks.size();ind++) {
+						PolyBlock p = polyblocks.get(ind);
+						p.setLocation(-110);
+					}
+					
+					for (int ind=0;ind<cirblocks.size();ind++) {
+						CircleBlock d = cirblocks.get(ind);
+						d.setLocation(-110);
+					}
+					for (int i1=0; i1<specialblocks.size(); i1++) {
+						SpecialBlock s = specialblocks.get(i1);
+						s.setLocation(-110);
+					} 
+					for (int i=0; i<disappear.size(); i++) {
+						disappearPos.get(i).y-=110;
+					}
 				}
-				c.px+=c.vx;
-				c.py+=c.vy;
-				c.cir.setCenterX(c.px);
-				c.cir.setCenterY(c.py);
-				for (int ind=0; ind<walls.size(); ind++) {
-					Wall w = walls.get(ind);
-					if (ind==2) {
-						if (c.py>220) {
+				fx+=2;
+				deleteLine();
+			}
+			if (start==2) {
+				
+				stopCount=0;
+				for (int i=0; i<balls.size(); i++) {
+					Ball c = balls.get(i);
+					c.px+=c.vx;
+					c.py+=c.vy;
+					c.cir.setCenterX(c.px);
+					c.cir.setCenterY(c.py);
+					for (int ind=0; ind<walls.size(); ind++) {
+						Wall w = walls.get(ind);
+						if (ind==2) {
+							if (c.py>350) {
+								if (c.iscollideWithWall(w.vertex)) {
+									c.collide(collision,w.elastic);
+									break;
+								}
+							}
+						}else {
 							if (c.iscollideWithWall(w.vertex)) {
 								c.collide(collision,w.elastic);
 								break;
 							}
 						}
-					}else {
-						if (c.iscollideWithWall(w.vertex)) {
-							c.collide(collision,w.elastic);
-							break;
-						}
-					}
-				}
-				for (int ind=0;ind<polyblocks.size();ind++) {
-					PolyBlock p = polyblocks.get(ind);
-					if (c.iscollideWithPolygon(p.vertex)) {
-						p.collide(c.mass);
-						c.collide(collision,false);
-						userScore++;
-					}
-				}
-				
-				for (int ind=0;ind<cirblocks.size();ind++) {
-					CircleBlock d = cirblocks.get(ind);
-					if (c.iscollideWithCircle(d)) {
-						d.collide(c.mass);
-						c.collide(collision,false);
-						userScore++;
-					}
-				}
-				for (int i1=0; i1<specialblocks.size(); i1++) {
-					SpecialBlock s = specialblocks.get(i1);
-					if (c.iscollideWithSpecial(s)) {
-						s.collide();
-						if (s.add&&s.larger) {
-							//just make sure s is not the boom
-						}else if (s.add) {
-							balls.add(new Ball(200,50,0,1));
-						}else if (s.larger) {
-							c.setMass(20, 2);
-						}
-					}
-				}
-				if (c.stop) {
-					stopCount++;
-				}
-				if (((10/27.0*c.px+2300/27.0>c.py&&350>=c.px) || (3100/9.0-10/27.0*c.px>c.py&&c.px>=350)) && c.px>55 && c.px<645) {
-					
-					if (c.py<=220 && c.px<450 && c.px>250) {
-						c.px-=c.vx;
-						c.py-=c.vy;
-						c.cir.setCenterX(c.px);
-						c.cir.setCenterY(c.py);
-						c.stop=true;
-					}
-					if (10/27.0*c.px+2300/27.0<c.py+c.radius || 3100/9.0-10/27.0*c.px<c.py+c.radius) {
-						c.py-=1;
-						c.cir.setCenterY(c.py);
 					}
 					for (int ind=0; ind<balls.size(); ind++) {
 						Ball c1 = balls.get(ind);
-						if ((10/27.0*c1.px+2300/27.0>c1.py || 3100/9.0-10/27.0*c1.px>c1.py) && c1.px>55 && c1.px<645) {
+						if ((10/27.0*c1.px+2300/27.0>=c1.py || 3100/9.0-10/27.0*c1.px>=c1.py) && c1.px>=55 && c1.px<=645) {
 							if (c!=c1) {
 								c.collideWithBall(c1);
 							}
 						}
+						if (c.py>=180 && c.py<=220 && c.px<450 && c.px>250) {
+							c.px-=c.vx;
+							c.py-=c.vy;
+							c.cir.setCenterX(c.px);
+							c.cir.setCenterY(c.py);
+						}
+						if ((10/27.0*c.px+2300/27.0<c.py+c.radius&&350>=c.px&&50<c.px) || (3100/9.0-10/27.0*c.px<c.py+c.radius&&350<=c.px&&c.px<650)) {
+							c.py-=2;
+							c.cir.setCenterY(c.py);
+						}
 					}
-				}		
-				if (c.py<0) {
-					c.stop=true;
+					if (c.py<0) {
+						c.stop=true;
+					}
+					if (c.px<c.radius) {
+						c.px=c.radius;
+						c.cir.setCenterX(c.px);
+					}else if (c.px>700-c.radius) {
+						c.px=700-c.radius;
+						c.cir.setCenterX(c.px);
+					}
+					if (c.py<=c.radius) {
+						c.py=c.radius;
+						c.cir.setCenterY(c.py);
+					}else if (c.py>1200-c.radius) {
+						c.py=1200-c.radius;
+						c.cir.setCenterY(c.py);
+					}
+					if (c.px==Float.NaN || c.py==Float.NaN) {
+						c.setLocation(100, 50);
+						c.setVelocity(0.6,0.6);
+					}
+					if (c.vx==Double.NaN || c.vy==Double.NaN) {
+						c.setLocation(100, 100);
+						c.setVelocity(0.6,0.6);
+					}
+					if (c.py<=80 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))){
+						c.vy+=0.0025;
+					}
+					if ((c.px<35 || c.px>665) && (c.vy>-0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
+						c.vy-=0.002;
+					}
+					if (c.stop) {
+						stopCount++;
+					}
 				}
-				if (c.px<c.radius) {
-					c.px=c.radius;
-					c.cir.setCenterX(c.px);
-				}else if (c.px>700-c.radius) {
-					c.px=700-c.radius;
-					c.cir.setCenterX(c.px);
+				if (songend) {
+					mode=2;
 				}
-				if (c.py<=c.radius) {
-					c.py=c.radius;
-					c.cir.setCenterY(c.py);
-				}else if (c.py>1200-c.radius) {
-					c.py=1200-c.radius;
-					c.cir.setCenterY(c.py);
-				}
-				if (c.px==Float.NaN || c.py==Float.NaN) {
-					c.setLocation(100, 100);
-					c.setVelocity(0.6,0.6);
-				}
-				if (c.vx==Double.NaN || c.vy==Double.NaN) {
-					c.setLocation(100, 100);
-					c.setVelocity(0.6,0.6);
+				if (stopCount==balls.size()) {
+					start=-1;
+					for (int ind=0;ind<polyblocks.size();ind++) {
+						polyblocks.get(ind).setLocation(110);
+					}
+					
+					for (int ind=0;ind<cirblocks.size();ind++) {
+						cirblocks.get(ind).setLocation(110);
+					}
+					for (int i1=0; i1<specialblocks.size(); i1++) {
+						specialblocks.get(i1).setLocation(110);
+					}
+					num = (int)(Math.random()*6+1);
+					generateBlocks(num, 970,1015);
 				}
 			}
-			if (stopCount==balls.size()) {
-				start=2;
-				for (int i=0; i<balls.size(); i++) {
-					balls.get(i).stop=false;
-					balls.get(i).setVelocity(0,1);
-					balls.get(i).hasCollide=false;
+			//mouse clicked
+			if (Mouse.isButtonDown(0) && start!=1&& start!=2) {
+				start=-1;
+				xpos=Mouse.getX();
+				ypos=1200-Mouse.getY();
+				if (ypos>225 && ypos<1050) {
+					start=0;
+					stopCount=0;
 				}
-				Game.count=0;
+			}
+			//mouse released
+			else if (start==0) {
+				start=1;
+				stopCount=0;
+				for (int i=0; i<balls.size(); i++) {
+					balls.get(i).setVelocity(xpos-350, ypos-200);
+					balls.get(i).stop=false;
+					balls.get(i).firstTime=true;
+					time=0;
+					num=300;
+				}
+			}
+			//start the collisions
+			if(start==1){
+				if (Game.count%250==0) {
+					Game.songs.play();
+				}
+				Game.count++;
+				stopCount=0;
+				for (int i=0; i<balls.size(); i++) {
+					time++;
+					if(!(i*i*80+i*100<time)) {
+						break;
+					}
+					Ball c = balls.get(i);
+					if (c.firstTime) {
+						c.setLocation(350,220+c.radius);
+						c.firstTime=false;
+					}
+					if (c.vy<0 && c.px>55 && c.px<645) {
+						c.vy+=0.003;
+					}
+					else if (c.vy>=0 && c.px>55 && c.px<645 && c.hasCollide) {
+						if (c.py>=350 && c.py<=1140 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
+							c.vy+=0.003;
+						}else if (c.py<=80 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))){
+							c.vy+=0.0025;
+						}else if(c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1)) {
+							c.vy+=0.0015;
+						}
+					}
+					if ((c.px<35 || c.px>665) && (c.vy>-0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
+						c.vy-=0.002;
+					}
+					c.px+=c.vx;
+					c.py+=c.vy;
+					c.cir.setCenterX(c.px);
+					c.cir.setCenterY(c.py);
+					for (int ind=0; ind<walls.size(); ind++) {
+						Wall w = walls.get(ind);
+						if (ind==2) {
+							if (c.py>220) {
+								if (c.iscollideWithWall(w.vertex)) {
+									c.collide(collision,w.elastic);
+									break;
+								}
+							}
+						}else {
+							if (c.iscollideWithWall(w.vertex)) {
+								c.collide(collision,w.elastic);
+								break;
+							}
+						}
+					}
+					for (int ind=0;ind<polyblocks.size();ind++) {
+						PolyBlock p = polyblocks.get(ind);
+						if (c.iscollideWithPolygon(p.vertex)) {
+							p.collide(c.mass);
+							c.collide(collision,false);
+							userScore++;
+						}
+					}
+					
+					for (int ind=0;ind<cirblocks.size();ind++) {
+						CircleBlock d = cirblocks.get(ind);
+						if (c.iscollideWithCircle(d)) {
+							d.collide(c.mass);
+							c.collide(collision,false);
+							userScore++;
+						}
+					}
+					for (int i1=0; i1<specialblocks.size(); i1++) {
+						SpecialBlock s = specialblocks.get(i1);
+						if (c.iscollideWithSpecial(s)) {
+							s.collide();
+							if (s.add&&s.larger) {
+								//just make sure s is not the boom
+							}else if (s.add) {
+								balls.add(new Ball(200,50,0,1));
+							}else if (s.larger) {
+								c.setMass(20, 2);
+							}
+						}
+					}
+					if (c.stop) {
+						stopCount++;
+					}
+					if (((10/27.0*c.px+2300/27.0>c.py&&350>=c.px) || (3100/9.0-10/27.0*c.px>c.py&&c.px>=350)) && c.px>55 && c.px<645) {
+						
+						if (c.py<=220 && c.px<450 && c.px>250) {
+							c.px-=c.vx;
+							c.py-=c.vy;
+							c.cir.setCenterX(c.px);
+							c.cir.setCenterY(c.py);
+							c.stop=true;
+						}
+						if (10/27.0*c.px+2300/27.0<c.py+c.radius || 3100/9.0-10/27.0*c.px<c.py+c.radius) {
+							c.py-=1;
+							c.cir.setCenterY(c.py);
+						}
+						for (int ind=0; ind<balls.size(); ind++) {
+							Ball c1 = balls.get(ind);
+							if ((10/27.0*c1.px+2300/27.0>c1.py || 3100/9.0-10/27.0*c1.px>c1.py) && c1.px>55 && c1.px<645) {
+								if (c!=c1) {
+									c.collideWithBall(c1);
+								}
+							}
+						}
+					}		
+					if (c.py<0) {
+						c.stop=true;
+					}
+					if (c.px<c.radius) {
+						c.px=c.radius;
+						c.cir.setCenterX(c.px);
+					}else if (c.px>700-c.radius) {
+						c.px=700-c.radius;
+						c.cir.setCenterX(c.px);
+					}
+					if (c.py<=c.radius) {
+						c.py=c.radius;
+						c.cir.setCenterY(c.py);
+					}else if (c.py>1200-c.radius) {
+						c.py=1200-c.radius;
+						c.cir.setCenterY(c.py);
+					}
+					if (c.px==Float.NaN || c.py==Float.NaN) {
+						c.setLocation(100, 100);
+						c.setVelocity(0.6,0.6);
+					}
+					if (c.vx==Double.NaN || c.vy==Double.NaN) {
+						c.setLocation(100, 100);
+						c.setVelocity(0.6,0.6);
+					}
+				}
+				if (stopCount==balls.size()) {
+					start=2;
+					for (int i=0; i<balls.size(); i++) {
+						balls.get(i).stop=false;
+						balls.get(i).setVelocity(0,1);
+						balls.get(i).hasCollide=false;
+					}
+					Game.count=0;
+				}
+			}
+		}
+		else if (mode==2) {
+			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
+					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
+				mouseDown=true;
+			}else if (mouseDown) {
+				mouseDown=false;
+				songend=false;
+				mode=1;
 			}
 		}
 	}
@@ -705,7 +759,7 @@ public class Game extends BasicGameState{
 		Game.round++;
 		if (round%2==1 && !hasSpecial && polyblocks.size()>0) {
 			double n1 = Math.random();
-			if(n1>=0.65) {
+			if(n1>=0.6) {
 				specialblocks.add(new SpecialBlock(polyblocks.getLast().poly.getCenterX(),polyblocks.getLast().poly.getCenterY(),true,false));
 				polyblocks.removeLast();
 				hasSpecial = true;
