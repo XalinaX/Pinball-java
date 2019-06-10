@@ -85,10 +85,6 @@ public class Ball {
 			this.vy=tang.y*ratio;
 		}
 		else {
-			if (Game.count%3==0) {
-				Game.songs.play();
-			}
-			Game.count++;
 			v1 = new Vec2d((float)this.vx,(float)this.vy);
 			vr1 = new Vec2d(-v1.x,-v1.y);
 			proj1 = new Vec2d(l.x*vr1.dot(l)/l.dot(l),l.y*vr1.dot(l)/l.dot(l));

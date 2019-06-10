@@ -420,6 +420,7 @@ public class Game extends BasicGameState{
 			deleteLine();
 		}
 		if (start==2) {
+			
 			stopCount=0;
 			for (int i=0; i<balls.size(); i++) {
 				Ball c = balls.get(i);
@@ -536,6 +537,10 @@ public class Game extends BasicGameState{
 		}
 		//start the collisions
 		if(start==1){
+			if (Game.count%200==0) {
+				Game.songs.play();
+			}
+			Game.count++;
 			stopCount=0;
 			for (int i=0; i<balls.size(); i++) {
 				time++;
@@ -670,7 +675,7 @@ public class Game extends BasicGameState{
 					balls.get(i).setVelocity(0,1);
 					balls.get(i).hasCollide=false;
 				}
-				
+				Game.count=0;
 			}
 		}
 	}
