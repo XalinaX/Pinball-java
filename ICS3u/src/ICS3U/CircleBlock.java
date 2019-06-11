@@ -18,7 +18,7 @@ public class CircleBlock {
 	protected Color color;
 	
 	/**
-	 * constructor
+	 * constructor: generate circle blocks
 	 * @param x - centerX of the circle
 	 * @param y - centerY of the circle
 	 * @param round - the round of the game
