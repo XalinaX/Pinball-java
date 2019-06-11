@@ -92,7 +92,6 @@ public class Songs {
 			linenum=1;
 			Game.guessed=false;
 		}
-		System.out.println(song+" "+linenum);
 		try (Stream<String> lines = Files.lines(Paths.get(song))){
 		    line = lines.skip(linenum-1).findFirst().get();
 			audioInputStream = AudioSystem.getAudioInputStream(new File(notesmap.get(line)).getAbsoluteFile());
