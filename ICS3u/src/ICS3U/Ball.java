@@ -26,6 +26,7 @@ public class Ball {
 	 * @param vy - the speed on y-axis
 	 */
 	public Ball(int x, int y, double vx, double vy) {
+		// constructor: 
 		this.px=x;
 		this.py=y;
 		radius=15;
