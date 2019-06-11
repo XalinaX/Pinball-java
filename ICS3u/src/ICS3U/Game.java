@@ -82,11 +82,19 @@ public class Game extends BasicGameState{
 	public static Color transparentGray;
 	public static Image songtip;
 	public static Image songtip1;
+	public static Image right;
+	public static Image wrong;
 	public static Image go;
 	public static boolean songend;
 	public static Image[] songImage;
-	public static float rightX;
+	public static float rightY;
 	public static boolean guessed;
+	public static boolean ask;
+	public static boolean checked;
+
+	private java.awt.Font awtFont2;
+	private TrueTypeFont font2;
+	public static float clickedY;
 
 
 	
@@ -101,7 +109,7 @@ public class Game extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		Songs.linenum=1;
-		mode=2;
+		mode=0;
 		count=0;
 		songImage = new Image[6];
 		songImage[0] = new Image("./songs/image/jht.png");
@@ -112,10 +120,14 @@ public class Game extends BasicGameState{
 		songImage[5] = new Image("./songs/image/gbqq.png");
 		songtip = new Image("./songs/image/songtip.gif");
 		songtip1 = new Image("./songs/image/songtip1.gif");
+		wrong = new Image("./songs/image/wrong.png");
+		right = new Image("./songs/image/right.png");
 		go = new Image("./songs/image/go.gif");
 		transparentGray = new Color(110,110,110,220);
 		songend=false;
 		guessed=false;
+		ask=false;
+		checked=false;
 		
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
@@ -157,6 +169,8 @@ public class Game extends BasicGameState{
 		font = new TrueTypeFont(awtFont, false);
 		awtFont1 = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 35);
 		font1 = new TrueTypeFont(awtFont1, false);
+		awtFont2 = new java.awt.Font("Arial", java.awt.Font.BOLD, 45);
+		font2 = new TrueTypeFont(awtFont2, false);
 		userScore=0;
 		//add the walls
 		walls = new LinkedList<Wall>();
@@ -358,7 +372,7 @@ public class Game extends BasicGameState{
 			g.fillRect(0, 0, 700, 1200);
 			if (!guessed) {
 				num3 = (int)(Math.random()*3);
-				rightX = 25+num3*225;
+				rightY = 430+num3*200;
 				num1=(int)(Math.random()*6);
 				while(num1==Songs.num) {
 					num1 = (int)(Math.random()*6);
@@ -369,11 +383,20 @@ public class Game extends BasicGameState{
 				}
 				guessed=true;
 			}
-			songImage[Songs.num].draw(rightX,420,200,100);
-			songImage[0].draw(25+((num3+1)%3)*225,420,200,100);
-			songImage[1].draw(25+((num3+2)%3)*225,420,200,100);
-			songtip1.draw(50,200,600,130);
-			go.draw(200,800,300,200);
+			songImage[Songs.num].draw(210,rightY,280,140);
+			songImage[num1].draw(210,430+((num3+1)%3)*200,280,140);
+			songImage[num2].draw(210,430+((num3+2)%3)*200,280,140);
+			songtip1.draw(30,180,640,130);
+			if (ask) {
+				if(clickedY==rightY) {
+					right.draw(275,rightY-20,150,180);
+				}else {
+					right.draw(275,rightY-20,150,180);
+					wrong.draw(275,clickedY-20,150,180);
+				}
+				checked=true;
+			}
+			
 		}
 	}
 
@@ -757,14 +780,34 @@ public class Game extends BasicGameState{
 			}
 		}
 		else if (mode==2) {
-			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
-					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
+			Input in = gc.getInput();
+			if ((in.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)||Mouse.isButtonDown(0))&&Mouse.getX()<490&&Mouse.getX()>210
+					&&(1200-Mouse.getY()>430&&1200-Mouse.getY()<570
+							|| 1200-Mouse.getY()>630&&1200-Mouse.getY()<770
+							|| 1200-Mouse.getY()>830&&1200-Mouse.getY()<970)) {
 				mouseDown=true;
 			}else if (mouseDown) {
+				if (1200-Mouse.getY()>430&&1200-Mouse.getY()<570) {
+					clickedY = 430;
+				}else if (1200-Mouse.getY()>630&&1200-Mouse.getY()<770) {
+					clickedY= 630;
+				}else if (1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
+					clickedY=830;
+				}
+				ask=true;
 				mouseDown=false;
-				songend=false;
+			}
+			if (checked) {
+				try {
+					TimeUnit.MILLISECONDS.sleep(800);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				mode=1;
+				songend=false;
 				Songs.songStart=false;
+				ask=false;
+				checked=false;
 			}
 		}
 	}
@@ -774,7 +817,6 @@ public class Game extends BasicGameState{
 	 */
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return 2;
 	}
 	
