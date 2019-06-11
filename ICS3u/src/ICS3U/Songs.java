@@ -16,12 +16,17 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Songs {
 	protected int[] played = new int[6];
-	
+	protected String[] songs = {"./songs/JuHuaTai","./songs/BanDaoTieHe","./songs/DaoXiang",
+			"./songs/QiLiXiang","./songs/QingHuaCi","./songs/GaoBaiQiQiu"};
+	public static boolean songStart;
+	private boolean haveSong;
+	private String song;
 	public static int linenum = 1;
 	static Clip clip;
 	static String line;
 	static HashMap<String, String> notesmap;
 	static AudioInputStream audioInputStream;
+	public static int num;
 	
 	public Songs(){
 		notesmap = new HashMap<String, String>();
@@ -56,9 +61,39 @@ public class Songs {
 		notesmap.put("3 3", "./songs/notes/Piano.mf.F6-[AudioTrimmer.com].aiff");
 		notesmap.put("3 4", "./songs/notes/Piano.mf.G6-[AudioTrimmer.com].aiff");
 		
+		songStart=false;
 	}
+	
 	public void play(){
-		try (Stream<String> lines = Files.lines(Paths.get("./songs/JuHuaTai"))){
+		if (!Game.soundOn) {
+			linenum=1;
+			return;
+		}
+		haveSong=false;
+		for (int i=0;i<5;i++) {
+			if (played[i]==0) {
+				haveSong=true;
+			}
+		}
+		if (!haveSong) {
+			for (int i=0;i<5;i++) {
+				played[i]=0;
+			}
+		}
+		
+		if (!songStart) {
+			num = (int)(Math.random()*6);
+			while(played[num]!=0) {
+				num = (int)(Math.random()*6);
+			}
+			played[num]=1;
+			song = songs[num];
+			songStart = true;
+			linenum=1;
+			Game.guessed=false;
+		}
+		System.out.println(song+" "+linenum);
+		try (Stream<String> lines = Files.lines(Paths.get(song))){
 		    line = lines.skip(linenum-1).findFirst().get();
 			audioInputStream = AudioSystem.getAudioInputStream(new File(notesmap.get(line)).getAbsoluteFile());
 			clip = AudioSystem.getClip();

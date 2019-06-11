@@ -94,7 +94,6 @@ public class Ball {
 			this.vx=N1.x*ratio;
 			this.vy=N1.y*ratio;
 		}
-		
 	}
 	
 	/**

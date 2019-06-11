@@ -84,6 +84,11 @@ public class Game extends BasicGameState{
 	public static Image songtip1;
 	public static Image go;
 	public static boolean songend;
+	public static Image[] songImage;
+	public static float rightX;
+	public static boolean guessed;
+
+
 	
 	public Game(int game) {
 		username="Jennifer";
@@ -96,13 +101,21 @@ public class Game extends BasicGameState{
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		Songs.linenum=1;
-		mode=0;
+		mode=2;
 		count=0;
-		songtip = new Image("./image/songtip.gif");
-		songtip1 = new Image("./image/songtip1.gif");
-		go = new Image("./image/go.gif");
-		transparentGray = new Color(100,100,100,230);
+		songImage = new Image[6];
+		songImage[0] = new Image("./songs/image/jht.png");
+		songImage[1] = new Image("./songs/image/bdth.png");
+		songImage[2] = new Image("./songs/image/dx.png");
+		songImage[3] = new Image("./songs/image/qlx.png");
+		songImage[4] = new Image("./songs/image/qhc.png");
+		songImage[5] = new Image("./songs/image/gbqq.png");
+		songtip = new Image("./songs/image/songtip.gif");
+		songtip1 = new Image("./songs/image/songtip1.gif");
+		go = new Image("./songs/image/go.gif");
+		transparentGray = new Color(110,110,110,220);
 		songend=false;
+		guessed=false;
 		
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
@@ -184,6 +197,10 @@ public class Game extends BasicGameState{
 	/**
 	 * draw all the component to the screen
 	 */
+	
+	int num3=0;
+	int num1=1;
+	int num2=2;
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		
@@ -274,7 +291,7 @@ public class Game extends BasicGameState{
 		if (start==0) {
 			g.setColor(new Color(190,220,240));
 			for (float i=0;i<10;i++) {
-				Circle circle = new Circle((xpos-350)*i/10+350,(ypos-235)*i/10+220,6);
+				Circle circle = new Circle((xpos-350)*i/10+350,(ypos-235)*i/10+230,6);
 				g.draw(circle);
 				g.fill(circle);
 			}
@@ -339,6 +356,22 @@ public class Game extends BasicGameState{
 		}else if(mode==2){
 			g.setColor(transparentGray);
 			g.fillRect(0, 0, 700, 1200);
+			if (!guessed) {
+				num3 = (int)(Math.random()*3);
+				rightX = 25+num3*225;
+				num1=(int)(Math.random()*6);
+				while(num1==Songs.num) {
+					num1 = (int)(Math.random()*6);
+				}
+				num2=(int)(Math.random()*6);
+				while(num2==Songs.num|| num2==num1) {
+					num2 = (int)(Math.random()*6);
+				}
+				guessed=true;
+			}
+			songImage[Songs.num].draw(rightX,420,200,100);
+			songImage[0].draw(25+((num3+1)%3)*225,420,200,100);
+			songImage[1].draw(25+((num3+2)%3)*225,420,200,100);
 			songtip1.draw(50,200,600,130);
 			go.draw(200,800,300,200);
 		}
@@ -562,7 +595,7 @@ public class Game extends BasicGameState{
 				start=-1;
 				xpos=Mouse.getX();
 				ypos=1200-Mouse.getY();
-				if (ypos>225 && ypos<1050) {
+				if (ypos>245 && ypos<1050) {
 					start=0;
 					stopCount=0;
 				}
@@ -593,7 +626,7 @@ public class Game extends BasicGameState{
 					}
 					Ball c = balls.get(i);
 					if (c.firstTime) {
-						c.setLocation(350,220+c.radius);
+						c.setLocation(350,230+c.radius);
 						c.firstTime=false;
 					}
 					if (c.vy<0 && c.px>55 && c.px<645) {
@@ -724,14 +757,15 @@ public class Game extends BasicGameState{
 			}
 		}
 		else if (mode==2) {
-//			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
-//					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
-//				mouseDown=true;
-//			}else if (mouseDown) {
+			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
+					1200-Mouse.getY()>830&&1200-Mouse.getY()<970) {
+				mouseDown=true;
+			}else if (mouseDown) {
 				mouseDown=false;
 				songend=false;
 				mode=1;
-			//}
+				Songs.songStart=false;
+			}
 		}
 	}
 
