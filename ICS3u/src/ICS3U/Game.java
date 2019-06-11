@@ -91,10 +91,13 @@ public class Game extends BasicGameState{
 	public static boolean guessed;
 	public static boolean ask;
 	public static boolean checked;
-
 	private java.awt.Font awtFont2;
 	private TrueTypeFont font2;
 	public static float clickedY;
+	public static boolean addScore;
+	public static int count1;
+
+
 
 
 	
@@ -128,6 +131,8 @@ public class Game extends BasicGameState{
 		guessed=false;
 		ask=false;
 		checked=false;
+		count1=0;
+		addScore=false;
 		
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
@@ -169,7 +174,7 @@ public class Game extends BasicGameState{
 		font = new TrueTypeFont(awtFont, false);
 		awtFont1 = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 35);
 		font1 = new TrueTypeFont(awtFont1, false);
-		awtFont2 = new java.awt.Font("Arial", java.awt.Font.BOLD, 45);
+		awtFont2 = new java.awt.Font("Arial", java.awt.Font.BOLD, 35);
 		font2 = new TrueTypeFont(awtFont2, false);
 		userScore=0;
 		//add the walls
@@ -192,7 +197,7 @@ public class Game extends BasicGameState{
 
 		//add the balls
 		balls = new LinkedList<Ball>();
-		for (int i=0;i<9;i++) {
+		for (int i=0;i<8;i++) {
 			balls.add(new Ball(200+i*40,100,0,1.1));
 		}
 		
@@ -203,7 +208,7 @@ public class Game extends BasicGameState{
 		cirblocks = new LinkedList<CircleBlock>();
 		for (int i=0;i<2;i++) {
 			num = (int)(Math.random()*4+1);
-			generateBlocks(num, 860+i*110,905+i*110);
+			generateBlocks(num, 860+i*110,900+i*110);
 		}
 		start=2;
 	}
@@ -333,7 +338,7 @@ public class Game extends BasicGameState{
 			sbg.enterState(PinBall.gameend);
 		}
 		if (gameover) {
-			over.draw(25,500,650,140);
+			over.draw(5,500,690,150);
 			draw=true;
 		}
 		if (gameover1) {
@@ -361,7 +366,15 @@ public class Game extends BasicGameState{
 		g.setColor(Color.white);
 		g.drawString(Integer.toString(stopCount), 70, 40);
 		g.drawString(Integer.toString(start), 70, 60);
-		
+		if (addScore) {
+			font2.drawString(620, 180, "+300",Color.white);
+			count1++;
+			if (count1>=900) {
+				count1=0;
+				addScore=false;
+				userScore+=300;
+			}
+		}
 		if (mode==0) {
 			g.setColor(transparentGray);
 			g.fillRect(0, 0, 700, 1200);
@@ -390,13 +403,13 @@ public class Game extends BasicGameState{
 			if (ask) {
 				if(clickedY==rightY) {
 					right.draw(275,rightY-20,150,180);
+					addScore=true;
 				}else {
 					right.draw(275,rightY-20,150,180);
 					wrong.draw(275,clickedY-20,150,180);
 				}
 				checked=true;
 			}
-			
 		}
 	}
 
@@ -610,7 +623,7 @@ public class Game extends BasicGameState{
 						specialblocks.get(i1).setLocation(110);
 					}
 					num = (int)(Math.random()*6+1);
-					generateBlocks(num, 970,1015);
+					generateBlocks(num, 970,1010);
 				}
 			}
 			//mouse clicked
