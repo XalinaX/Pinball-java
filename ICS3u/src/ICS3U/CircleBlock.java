@@ -6,7 +6,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Circle;
 
 /**
- * circle block
+ * generating circle block
  */
 public class CircleBlock {
 	protected final int RADIUS = 34; // fixed radius
@@ -33,6 +33,7 @@ public class CircleBlock {
 	
 	/**
 	 * set the color
+	 * Color will change based on its score
 	 */
 	public void setColor() {
 		if (score<=10) {
@@ -53,11 +54,12 @@ public class CircleBlock {
 	}
 	
 	/**
-	 * check if it is collide with circle
+	 * check if it collides with circle
 	 * @param c - teh circle
 	 * @return true if collide
 	 */
 	public boolean iscollideWithCircle(CircleBlock c) {
+		//calculate the distance between the centers of cicle blocks
 		double distance = Math.sqrt((c.x-this.x)*(c.x-this.x)+(c.y-this.y)*(c.y-this.y));
 		if (distance<=this.RADIUS+c.RADIUS+5) {
 			return true;
@@ -66,7 +68,7 @@ public class CircleBlock {
 	}
 
 	/**
-	 * collide with the fireball
+	 * collide with the fireball after clicking the lighitning button
 	 */
 	public void collideWithFireball() {
 		if(circleLine(new Vec2d(Game.fx,Game.fy),new Vec2d(Game.fx+30,Game.fy))) {
@@ -109,7 +111,7 @@ public class CircleBlock {
 	}
 	
 	/**
-	 * check circle line collision
+	 * check if a circle block and a line collide
 	 * @param s - start point of the line
 	 * @param e - end point of the line
 	 * @return true if collide
@@ -134,7 +136,7 @@ public class CircleBlock {
 	}
 	
 	/**
-	 * circle point collision
+	 * check circle point collision
 	 * @param p - coordinate of the point
 	 * @return true if collide
 	 */
@@ -148,7 +150,7 @@ public class CircleBlock {
 	}
 	
 	/**
-	 * line point collision
+	 * check line point collision
 	 * @param s - start point of the line
 	 * @param e - end point of the line
 	 * @param x - x-coordinate of the point
@@ -180,7 +182,7 @@ public class CircleBlock {
 	}
 
 	/**
-	 * collide with the ball
+	 * things happened for circle block after collide with the ball
 	 * @param i - the mass of the ball
 	 */
 	public void collide(int i) {

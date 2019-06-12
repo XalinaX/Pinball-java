@@ -23,11 +23,14 @@ public class Menu extends BasicGameState {
 	public static boolean soundOn;
 	public static boolean clicked;
 	public static boolean clicked1;
+	public static boolean up = true;
 	
 	public Menu(int menu) {
 		
 	}
-
+	/**
+	 * draw components
+	 */
 	@Override
 	public void render(GameContainer arg0, StateBasedGame sbg, Graphics g) throws SlickException {
 		g.setFont(font);
@@ -49,7 +52,9 @@ public class Menu extends BasicGameState {
 		}
 		hi.draw(230,850,240,220);
 	}
-
+/**
+ * initialize components
+ */
 	@Override
 	public void init(GameContainer arg0, StateBasedGame sbg) throws SlickException {
 		awtFont = new java.awt.Font("Verdana", java.awt.Font.PLAIN, 40);
@@ -68,13 +73,16 @@ public class Menu extends BasicGameState {
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int arg1) throws SlickException {
+		// get mouse coordinate
 		int xpos=Mouse.getX();
 		int ypos=1200-Mouse.getY();
 		input = gc.getInput();
 		clicked1=input.isMousePressed(Input.MOUSE_LEFT_BUTTON);
 		if (clicked1) {
 			Vec2d point = new Vec2d(xpos,ypos);
+			// check if the ball is clicked
 			if (ball.circlePoint(point,true)) {
+				//System.exit(0);
 				change=true;
 				sbg.enterState(PinBall.login);
 				try {
@@ -87,9 +95,11 @@ public class Menu extends BasicGameState {
 		if (clicked1&&ypos>0 && ypos<60&&((xpos>0&&xpos<60)||(xpos>640&&xpos<700))) {
 			clicked=true;
 		}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
+			// check if exit button is clicked 
 			if (xpos>640 && xpos<700) {
 				sbg.enterState(PinBall.exit);
 			}else if (xpos>0 && xpos<60){
+				// check if mute button is clicked
 				if (soundOn) {
 					soundOn=false;
 				}else {
@@ -98,18 +108,25 @@ public class Menu extends BasicGameState {
 			}
 			clicked = false;
 		}
-		if (ball.px >= 548) {
+		// update ball's movement
+		if (ball.px >= 550) {
 			add = false;
-		} else if (ball.px <= 152) {
+			up = true;
+		} else if (ball.px <= 151) {
 			add = true;
+			up = false;
 		}
 		if (add)
 			ball.px+=0.15;
 		else
-			ball.px-=0.15;			
-		ball.py = (float) (100 * (-(Math.sqrt(10 - 0.00025 * Math.pow(ball.px - 350, 2)))
-					+ Math.pow(0.0005 * Math.pow(ball.px - 350, 2), (1 / 3.0))) + 857);
-
+			ball.px-=0.15;	
+		if(up) {
+			ball.py = (float)(1200- (100 * ((Math.sqrt(10 - 0.00025 * Math.pow(ball.px - 350, 2)))
+					+ Math.pow(0.0005 * Math.pow(ball.px - 350, 2), (1 / 3.0))) + 857)+500);
+		}else {
+		ball.py = (float)(1200- (100 * (-(Math.sqrt(10 - 0.00025 * Math.pow(ball.px - 350, 2)))
+					+ Math.pow(0.0005 * Math.pow(ball.px - 350, 2), (1 / 3.0))) + 857)+500);
+		}
 		ball.cir.setCenterX(ball.px);
 		ball.cir.setCenterY(ball.py);
 		
@@ -119,7 +136,6 @@ public class Menu extends BasicGameState {
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

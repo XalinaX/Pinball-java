@@ -5,10 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import javax.swing.JFileChooser;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
@@ -55,6 +59,7 @@ public class Leaderboard extends BasicGameState{
 	private static PrintWriter out;
 	
 	private Image[] number = new Image[15];
+	private Image[] profilePic = new Image[15];
 	private float[] lastNumberY = new float[15];
 
 	private int start;
@@ -63,6 +68,8 @@ public class Leaderboard extends BasicGameState{
 	private Rectangle rec;
 	private Image back;
 	private boolean clicked1;
+	
+	private JFileChooser fc;
 	
 	public Leaderboard(int leaderboard){
 	}
@@ -81,9 +88,13 @@ public class Leaderboard extends BasicGameState{
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		
+		fc = new JFileChooser("./profile_picture");
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
 		back = new Image("./image/return.gif");
 		for (int i=1;i<=15;i++) {
-			String s = "./image/number/"+i+".gif";
+			String s = "./leaderboard/number/"+i+".gif";
 			number[i-1]=new Image(s);
 			lastNumberY[i-1]=250+(i-1)*160;
 		}
@@ -139,6 +150,10 @@ public class Leaderboard extends BasicGameState{
 			lastLineY[i]=lines.get(i).getY();
 		}
 		
+		for (int i=0;i<15;i++) {
+			profilePic[i]=new Image("./profile_picture/default.png");
+		}
+		
 		clicked=false;
 		rec = new Rectangle(620,240,30,(float) (730*800.0/(160*player)));
 		lastCenterY=rec.getCenterY();
@@ -156,13 +171,11 @@ public class Leaderboard extends BasicGameState{
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics gr) throws SlickException {
-	
 		if (move) {
 			if (Math.round(lastCenterY+ye-lastY-rec.getHeight()/2)>=240 && Math.round(lastCenterY+ye-lastY+rec.getHeight()/2)<=970) {
 				rec.setCenterY(lastCenterY+ye-lastY);
 				stopMove=false;
-			}
-			else if (!stopMove) {
+			}else if (!stopMove) {
 				for (int i=0;i<15;i++) {
 					lastNumberY[i]=lastNumberY[i]-(ye-lastY)*16*player/73;
 				}
@@ -171,10 +184,8 @@ public class Leaderboard extends BasicGameState{
 				}
 				lastCenterY=rec.getCenterY();
 				stopMove=true;
-
 			}
 		}
-		
 		gr.setColor(Color.lightGray);
 		for (int i=0;i<lines.size();i++) {
 			if (move && !stopMove) {
@@ -190,12 +201,14 @@ public class Leaderboard extends BasicGameState{
 				String s1=line.getKey().trim();
 				String s2=Integer.toString(line.getValue());
 				if (move&&!stopMove) {	
-					font.drawString(274-s1.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s1);
-					font.drawString(494-s2.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s2);
+					font.drawString(334-s1.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s1);
+					font.drawString(524-s2.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s2);
+					profilePic[i].draw(130,lastNumberY[i]-(ye-lastY)*16*player/73+10,70,70);
 				}
 				else {
-					font.drawString(274-s1.length()*9, lastNumberY[i]+10, s1);
-					font.drawString(494-s2.length()*9, lastNumberY[i]+10, s2);
+					font.drawString(334-s1.length()*9, lastNumberY[i]+10, s1);
+					font.drawString(524-s2.length()*9, lastNumberY[i]+10, s2);
+					profilePic[i].draw(130,lastNumberY[i]+10,70,70);
 				}
 			}
 			i++;
@@ -225,14 +238,13 @@ public class Leaderboard extends BasicGameState{
 		}
 		
 		gr.fill(rec);
-		
 		gr.setColor(Color.white);
 		gr.drawRect(50, 160, 600, 900);
 		font1.drawString(110,50,"LEADER BOARD",Color.yellow);
 		gr.setLineWidth(3);
 		gr.fillRect(50, 160, 600, 50);
-		font.drawString(230, 160, "player", gray);
-		font.drawString(460, 160, "score", gray);
+		font.drawString(280, 160, "player", gray);
+		font.drawString(490, 160, "score", gray);
 		gr.fillRect(50, 1010, 600, 50);
 		
 		back.draw(20,20,60,60);
@@ -293,7 +305,24 @@ public class Leaderboard extends BasicGameState{
 			stopMove=true;
 			firstClick=true;
 		}
-		
+		if (Mouse.isButtonDown(0) && xs<200 && xs>130 && (ys-lastLineY[0]+160)%160>50 && (ys-lastLineY[0]+160)%160<120
+				&& ys>210 && ys<1010) {
+			int n=(int)(ys-lastLineY[0]+160)/160;
+	        int returnVal = fc.showOpenDialog(null);
+	        if (returnVal == JFileChooser.APPROVE_OPTION) {
+	            File file = fc.getSelectedFile();     		
+	            java.nio.file.Path dest;
+	            String d;
+	            try {
+	            	d="./profile_picture/"+file.getName();
+		            dest = Paths.get(d);
+					Files.copy(file.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
+					profilePic[n]=new Image(d);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        }
+		}
 	}
 	@Override
 	public int getID() {

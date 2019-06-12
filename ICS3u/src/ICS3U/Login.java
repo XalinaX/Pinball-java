@@ -22,7 +22,6 @@ import org.newdawn.slick.state.StateBasedGame;
  *
  */
 public class Login extends BasicGameState implements ComponentListener{
-//	public static org.newdawn.slick.KeyListener keylistener;
 	
 	private Input input;
 	protected TextField text;
@@ -54,7 +53,10 @@ public class Login extends BasicGameState implements ComponentListener{
 	public Login(int login) {
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	/**
+	 * draw each component on the screen
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		// TODO Auto-generated method stub
@@ -90,7 +92,9 @@ public class Login extends BasicGameState implements ComponentListener{
 		enter.draw(200,750,300,110);
 		help.draw(140,0,60,60);
 	}
-
+	/**
+	 * initialize each component
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		exit = new Image("./image/exit.gif");
@@ -140,9 +144,12 @@ public class Login extends BasicGameState implements ComponentListener{
 
 
 	}
-
+/**
+ * update position
+ */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int arg1) throws SlickException {
+		// get mouse position
 		int xpos=Mouse.getX();
 		int ypos=1200-Mouse.getY();
 		input = gc.getInput();
@@ -151,18 +158,22 @@ public class Login extends BasicGameState implements ComponentListener{
 			clicked=true;
 		}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
 			if (xpos>640 && xpos<700) {
+				// exit button
 				sbg.enterState(PinBall.exit);
 			}else if (xpos>0 && xpos<60){
+				// mute button
 				if (soundOn) {
 					soundOn=false;
 				}else {
 					soundOn=true;
 				}
 			}else if (xpos>70 && xpos<130) {
+				// leaderboard button
 				Leaderboard.lastState = PinBall.login;
 				sbg.getState(PinBall.leaderboard).init(gc, sbg);
 				sbg.enterState(PinBall.leaderboard);
 			}else if (xpos>140 && xpos<200) {
+				// rule button
 				Rule.lastState=PinBall.login;
 				sbg.enterState(PinBall.rule);
 			}
@@ -173,6 +184,7 @@ public class Login extends BasicGameState implements ComponentListener{
         text.isAcceptingInput();
 
 		if(clicked1) {
+			//enter game
 			if(xpos>=200&&xpos<=500&&ypos<=860&&ypos>=750) {
 				Game.username = text.getText();
 				if (!Game.username.equals("")) {
@@ -201,7 +213,7 @@ public class Login extends BasicGameState implements ComponentListener{
 				e.printStackTrace();
 			}
 		}
-		
+		// update balls' movement
 		if(ball1.px<=600&&ball1.py<=100)
 			ball1.px++;
 		else if(ball1.px>=100 && ball1.py>=1100)

@@ -242,7 +242,6 @@ public class Game extends BasicGameState{
 		g.drawLine(310,200,310,217);
 		g.drawLine(390,200,390,217);
 		
-		//deadline.y=225
 		g.setLineWidth(2);
 		for(int i=0;i<20;i++) {
 			if (i!=10&&i!=9)
@@ -295,6 +294,7 @@ public class Game extends BasicGameState{
 			g.drawString(d.s,d.cir.getCenterX()-3*(2+(int)Math.log10(d.score)), d.cir.getCenterY()-10);
 		}
 		
+		//draw special blocks
 		for (int i=0; i<specialblocks.size(); i++) {
 			SpecialBlock s = specialblocks.get(i);
 			if (s.add && s.larger) {
@@ -338,7 +338,7 @@ public class Game extends BasicGameState{
 			sbg.enterState(PinBall.gameend);
 		}
 		if (gameover) {
-			over.draw(5,500,690,150);
+			over.draw(5,500,690,170);
 			draw=true;
 		}
 		if (gameover1) {
@@ -416,7 +416,6 @@ public class Game extends BasicGameState{
 	/**
 	 * update the data of the game and call render again
 	 */
-	
 	boolean mouseDown=false;
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
