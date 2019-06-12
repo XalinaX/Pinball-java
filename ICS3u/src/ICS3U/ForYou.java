@@ -39,7 +39,7 @@ public class ForYou extends BasicGameState{
 		}
 		page=0;
 		chengdu=new Music("./songs/chengdu.ogg");
-		enter=false;
+		enter=true;
 	}
 
 	@Override
