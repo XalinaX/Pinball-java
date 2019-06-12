@@ -60,6 +60,7 @@ public class Leaderboard extends BasicGameState{
 	
 	private Image[] number = new Image[15];
 	private Image[] profilePic = new Image[15];
+	private String[] profilePicName = new String[15];
 	private float[] lastNumberY = new float[15];
 
 	private int start;
@@ -70,6 +71,8 @@ public class Leaderboard extends BasicGameState{
 	private boolean clicked1;
 	
 	private JFileChooser fc;
+
+	
 	
 	public Leaderboard(int leaderboard){
 	}
@@ -150,9 +153,16 @@ public class Leaderboard extends BasicGameState{
 			lastLineY[i]=lines.get(i).getY();
 		}
 		
-		for (int i=0;i<15;i++) {
-			profilePic[i]=new Image("./profile_picture/default.png");
+		try {
+			sc = new Scanner (new File ("./leaderboard/profile_pic"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
+		for (int i=0;i<15;i++) {
+			profilePicName[i]=sc.nextLine();
+			profilePic[i]=new Image(profilePicName[i]);
+		}
+		sc.close();
 		
 		clicked=false;
 		rec = new Rectangle(620,240,30,(float) (730*800.0/(160*player)));
@@ -318,6 +328,13 @@ public class Leaderboard extends BasicGameState{
 		            dest = Paths.get(d);
 					Files.copy(file.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
 					profilePic[n]=new Image(d);
+					profilePicName[n] = d;
+					out = new PrintWriter (new FileWriter("./leaderboard/profile_pic"));
+					for (int i=0;i<15;i++) {
+						out.println(profilePicName[i]);
+					}
+					out.close();
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
