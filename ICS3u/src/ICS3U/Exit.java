@@ -34,6 +34,7 @@ public class Exit extends BasicGameState{
 	public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
 		// enter another page
 		if (draw) {
+			ForYou.enter=true;
 			sbg.enterState(PinBall.foryou);
 			try {
 				TimeUnit.MILLISECONDS.sleep(550);

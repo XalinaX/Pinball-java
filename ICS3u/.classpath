@@ -12,5 +12,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jar/natives-windows.jar"/>
 	<classpathentry kind="lib" path="lib/jar/slick.jar"/>
+	<classpathentry kind="lib" path="lib/jar/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/jar/jorbis-0.0.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

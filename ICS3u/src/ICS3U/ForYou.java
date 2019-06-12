@@ -25,6 +25,7 @@ public class ForYou extends BasicGameState{
 	private int page;
 	private Rectangle rec;
 	private Music chengdu;
+	public static boolean enter;
 	
 	public ForYou(int foryou) {
 	}
@@ -38,6 +39,7 @@ public class ForYou extends BasicGameState{
 		}
 		page=0;
 		chengdu=new Music("./songs/chengdu.ogg");
+		enter=false;
 	}
 
 	@Override
@@ -49,6 +51,10 @@ public class ForYou extends BasicGameState{
 
 	@Override
 	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+		if (enter) {
+			chengdu.play();
+			enter=false;
+		}
 		if (rec.getCenterY()+0.1<=1799) {
 			rec.setCenterY((float) (rec.getCenterY()+0.1));
 		}else {
