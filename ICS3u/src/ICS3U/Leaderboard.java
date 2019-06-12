@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
@@ -94,6 +95,11 @@ public class Leaderboard extends BasicGameState{
 		
 		fc = new JFileChooser("./profile_picture");
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fc.setDialogTitle("Select an image");
+		fc.setAcceptAllFileFilterUsed(false);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG and GIF images", "png", "gif", "jpg");
+		fc.addChoosableFileFilter(filter);
+		fc.setAccessory(new ImagePreview(fc));
 
 		back = new Image("./image/return.gif");
 		for (int i=1;i<=15;i++) {
@@ -210,15 +216,21 @@ public class Leaderboard extends BasicGameState{
 			if (i>=start && i<end) {
 				String s1=line.getKey().trim();
 				String s2=Integer.toString(line.getValue());
+				double ratio=1;
+				if (profilePic[i].getHeight()>=profilePic[i].getWidth()) {
+					ratio = 70.0/profilePic[i].getHeight();
+				}else if (profilePic[i].getHeight()<profilePic[i].getWidth()) {
+					ratio = 70.0/profilePic[i].getWidth();
+				}
 				if (move&&!stopMove) {	
 					font.drawString(334-s1.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s1);
 					font.drawString(524-s2.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s2);
-					profilePic[i].draw(130,lastNumberY[i]-(ye-lastY)*16*player/73+10,70,70);
+					profilePic[i].draw(130,lastNumberY[i]-(ye-lastY)*16*player/73+10,(float)(profilePic[i].getWidth()*ratio),(float)(profilePic[i].getHeight()*ratio));
 				}
 				else {
 					font.drawString(334-s1.length()*9, lastNumberY[i]+10, s1);
 					font.drawString(524-s2.length()*9, lastNumberY[i]+10, s2);
-					profilePic[i].draw(130,lastNumberY[i]+10,70,70);
+					profilePic[i].draw(130,lastNumberY[i]+10,(float)(profilePic[i].getWidth()*ratio),(float)(profilePic[i].getHeight()*ratio));
 				}
 			}
 			i++;
@@ -318,27 +330,28 @@ public class Leaderboard extends BasicGameState{
 		if (Mouse.isButtonDown(0) && xs<200 && xs>130 && (ys-lastLineY[0]+160)%160>50 && (ys-lastLineY[0]+160)%160<120
 				&& ys>210 && ys<1010) {
 			int n=(int)(ys-lastLineY[0]+160)/160;
-	        int returnVal = fc.showOpenDialog(null);
-	        if (returnVal == JFileChooser.APPROVE_OPTION) {
-	            File file = fc.getSelectedFile();     		
-	            java.nio.file.Path dest;
-	            String d;
-	            try {
-	            	d="./profile_picture/"+file.getName();
-		            dest = Paths.get(d);
-					Files.copy(file.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
-					profilePic[n]=new Image(d);
-					profilePicName[n] = d;
-					out = new PrintWriter (new FileWriter("./leaderboard/profile_pic"));
-					for (int i=0;i<15;i++) {
-						out.println(profilePicName[i]);
+			if (((String) board.keySet().toArray()[n]).trim().equals(Game.username)) {
+		        int returnVal = fc.showOpenDialog(null);
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();     		
+		            java.nio.file.Path dest;
+		            String d;
+		            try {
+		            	d="./profile_picture/"+file.getName();
+			            dest = Paths.get(d);
+						Files.copy(file.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
+						profilePic[n]=new Image(d);
+						profilePicName[n] = d;
+						out = new PrintWriter (new FileWriter("./leaderboard/profile_pic"));
+						for (int i=0;i<15;i++) {
+							out.println(profilePicName[i]);
+						}
+						out.close();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-					out.close();
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	        }
+		        }
+			}
 		}
 	}
 	@Override

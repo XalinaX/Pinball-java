@@ -15,9 +15,9 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Songs {
-	protected int[] played = new int[6];
+	protected int[] played = new int[8];
 	protected String[] songs = {"./songs/JuHuaTai","./songs/BanDaoTieHe","./songs/DaoXiang",
-			"./songs/QiLiXiang","./songs/QingHuaCi","./songs/GaoBaiQiQiu"};
+			"./songs/QiLiXiang","./songs/QingHuaCi","./songs/GaoBaiQiQiu","./songs/DengNiXiaKe","./songs/HongChenKeZhan"};
 	public static boolean songStart;
 	private boolean haveSong;
 	private String song;
@@ -70,21 +70,21 @@ public class Songs {
 			return;
 		}
 		haveSong=false;
-		for (int i=0;i<5;i++) {
+		for (int i=0;i<8;i++) {
 			if (played[i]==0) {
 				haveSong=true;
 			}
 		}
 		if (!haveSong) {
-			for (int i=0;i<5;i++) {
+			for (int i=0;i<8;i++) {
 				played[i]=0;
 			}
 		}
 		
 		if (!songStart) {
-			num = (int)(Math.random()*6);
+			num = (int)(Math.random()*8);
 			while(played[num]!=0) {
-				num = (int)(Math.random()*6);
+				num = (int)(Math.random()*8);
 			}
 			played[num]=1;
 			song = songs[num];

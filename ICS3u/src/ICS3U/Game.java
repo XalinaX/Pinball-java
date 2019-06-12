@@ -114,13 +114,16 @@ public class Game extends BasicGameState{
 		Songs.linenum=1;
 		mode=0;
 		count=0;
-		songImage = new Image[6];
+		songImage = new Image[8];
 		songImage[0] = new Image("./songs/image/jht.png");
 		songImage[1] = new Image("./songs/image/bdth.png");
 		songImage[2] = new Image("./songs/image/dx.png");
 		songImage[3] = new Image("./songs/image/qlx.png");
 		songImage[4] = new Image("./songs/image/qhc.png");
 		songImage[5] = new Image("./songs/image/gbqq.png");
+		songImage[6] = new Image("./songs/image/dnxk.png");
+		songImage[7] = new Image("./songs/image/hckz.png");
+
 		songtip = new Image("./songs/image/songtip.gif");
 		songtip1 = new Image("./songs/image/songtip1.gif");
 		wrong = new Image("./songs/image/wrong.png");
@@ -386,13 +389,13 @@ public class Game extends BasicGameState{
 			if (!guessed) {
 				num3 = (int)(Math.random()*3);
 				rightY = 430+num3*200;
-				num1=(int)(Math.random()*6);
+				num1=(int)(Math.random()*8);
 				while(num1==Songs.num) {
-					num1 = (int)(Math.random()*6);
+					num1 = (int)(Math.random()*8);
 				}
-				num2=(int)(Math.random()*6);
+				num2=(int)(Math.random()*8);
 				while(num2==Songs.num|| num2==num1) {
-					num2 = (int)(Math.random()*6);
+					num2 = (int)(Math.random()*8);
 				}
 				guessed=true;
 			}
