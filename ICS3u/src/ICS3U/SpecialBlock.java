@@ -5,9 +5,11 @@ import org.newdawn.slick.SlickException;
 
 /**
  * special block
- * if the ball collide with this blocks,
- * the ball can gets larger or the player can get an extra ball
- * 
+ * this class handles 3 special blocks:
+ * 1. the sign that gives players an extra ball
+ * 2. the sign that make the ball bigger
+ * 3. boom: delete blocks in a certain radius
+ *  
  */
 public class SpecialBlock {
 	protected float x;
@@ -23,7 +25,15 @@ public class SpecialBlock {
 	protected int width;
 	protected int height;
 	protected Image boom2;
-	
+	/**
+	 * constructor: initialize special blocks
+	 * @param x: the x position of the center of the block
+	 * @param y: the y position of the center of the block
+	 * @param add: if gives player an extra ball
+	 * @param larger: if make the ball bigger
+	 *  if both add and larger are true, it means boom
+	 * @throws SlickException
+	 */
 	public SpecialBlock(float x, float y,boolean add,boolean larger) throws SlickException {
 		this.RADIUS=30;
 		this.x=x;
@@ -44,15 +54,13 @@ public class SpecialBlock {
 	}
 	
 	/**
-	 * collide with the ball
+	 * when collide with the ball
 	 */
 	public void collide() {
-		// check if remove
 		if (this.add&&this.larger) {
 			for ( int i=0;i<Game.polyblocks.size();i++) {
 				PolyBlock p = Game.polyblocks.get(i);
 				if(Math.sqrt((Math.pow(p.poly.getCenterX()-x,2)+ Math.pow(p.poly.getCenterY()-y, 2)))<=200) {
-					// check if it works
 					p.delete();
 				}
 			}
