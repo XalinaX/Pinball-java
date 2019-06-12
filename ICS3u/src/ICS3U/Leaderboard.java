@@ -1,5 +1,8 @@
 package ICS3U;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -35,6 +38,8 @@ public class Leaderboard extends BasicGameState{
 	private java.awt.Font awtFont1;
 	private TrueTypeFont font1;
 
+	private java.awt.Font awtFont2;
+	
 	private int xs;
 	private int ys;
 	private int ye;
@@ -88,11 +93,26 @@ public class Leaderboard extends BasicGameState{
     }
 	
 	/**
+	 * set the font of file chooser
+	 * @param comp - the components in file chooser
+	 */
+	public void setFileChooserFont(Component[] comp)
+	  {
+	    for(int x = 0; x < comp.length; x++)
+	    {
+	      if(comp[x] instanceof Container) setFileChooserFont(((Container)comp[x]).getComponents());
+	      try{comp[x].setFont(awtFont2);}
+	      catch(Exception e){}
+	    }
+	  }
+	
+	/**
 	 * initialize the game screen
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+		awtFont2 = new java.awt.Font("Verdana", java.awt.Font.PLAIN, 28);
+
 		fc = new JFileChooser("./profile_picture");
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setDialogTitle("Select an image");
@@ -100,6 +120,8 @@ public class Leaderboard extends BasicGameState{
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG and GIF images", "png", "gif", "jpg");
 		fc.addChoosableFileFilter(filter);
 		fc.setAccessory(new ImagePreview(fc));
+		fc.setPreferredSize(new Dimension(900, 600));
+	    setFileChooserFont(fc.getComponents());
 
 		back = new Image("./image/return.gif");
 		for (int i=1;i<=15;i++) {

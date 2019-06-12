@@ -12,7 +12,7 @@ public class ImagePreview extends JComponent
     File file = null;
  
     public ImagePreview(JFileChooser fc) {
-        setPreferredSize(new Dimension(100, 50));
+        setPreferredSize(new Dimension(200, 100));
         fc.addPropertyChangeListener(this);
     }
  
@@ -24,10 +24,14 @@ public class ImagePreview extends JComponent
  
         ImageIcon tmpIcon = new ImageIcon(file.getPath());
         if (tmpIcon != null) {
-            if (tmpIcon.getIconWidth() > 90) {
+            if (tmpIcon.getIconWidth() > 180) {
                 thumbnail = new ImageIcon(tmpIcon.getImage().
-                                          getScaledInstance(90, -1,
+                                          getScaledInstance(180, -1,
                                                       Image.SCALE_DEFAULT));
+            }else if (tmpIcon.getIconWidth() < 120) {
+                thumbnail = new ImageIcon(tmpIcon.getImage().
+                        getScaledInstance(120, -1,
+                                    Image.SCALE_DEFAULT));
             } else { 
                 thumbnail = tmpIcon;
             }
