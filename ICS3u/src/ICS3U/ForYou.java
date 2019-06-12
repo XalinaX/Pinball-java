@@ -6,6 +6,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
@@ -23,6 +24,7 @@ public class ForYou extends BasicGameState{
 	private ArrayList<Image> text;
 	private int page;
 	private Rectangle rec;
+	private Music chengdu;
 	
 	public ForYou(int foryou) {
 	}
@@ -35,6 +37,7 @@ public class ForYou extends BasicGameState{
 			text.add(new Image("./image/forYou/text1.png"));
 		}
 		page=0;
+		chengdu=new Music("./songs/chengdu.ogg");
 	}
 
 	@Override
