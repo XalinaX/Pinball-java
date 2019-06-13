@@ -4,16 +4,18 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Funny extends BasicGameState{
 	private boolean enter;
 	private Music chillcity;
+	private SpriteSheet[] video;
 
 	public Funny(int funny) {
 	}
-
+ 
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		enter=true;

@@ -1,0 +1,8 @@
+frank
+./profile_picture/bulbasaur.png
+Jennifer
+./profile_picture/clefairy.png
+alina
+./profile_picture/clefairy.png
+amy
+./profile_picture/pikachu.png
