@@ -54,7 +54,7 @@ public class Leaderboard extends BasicGameState{
 	
 	private LinkedList<Line> lines;
 	private float[] lastLineY;
-	private Map<String,Integer> board;
+	public static Map<String,Integer> board;
 	
 	private Color gray = new Color(80,80,80);
 	private Color gray1 = new Color(55,55,55);
@@ -65,8 +65,7 @@ public class Leaderboard extends BasicGameState{
 	private static PrintWriter out;
 	
 	private Image[] number = new Image[15];
-	private Image[] profilePic = new Image[15];
-	private String[] profilePicName = new String[15];
+	public static Map<String,String> image;
 	private float[] lastNumberY = new float[15];
 
 	private int start;
@@ -129,23 +128,21 @@ public class Leaderboard extends BasicGameState{
 			number[i-1]=new Image(s);
 			lastNumberY[i-1]=250+(i-1)*160;
 		}
-		try {
-			sc = new Scanner (new File ("./leaderboard/leaderboard.txt"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		
 		awtFont = new java.awt.Font("Verdana", java.awt.Font.PLAIN, 35);
 		font = new TrueTypeFont(awtFont, false);		
 		awtFont1 = new java.awt.Font("Arial", java.awt.Font.BOLD, 60);
 		font1 = new TrueTypeFont(awtFont1, false);	
 		
+		try {
+			sc = new Scanner (new File ("./leaderboard/leaderboard.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		board = new HashMap<>();
 		while(sc.hasNextLine()) {
 			String s = sc.nextLine();
 			String s1= sc.nextLine();
-			while (board.containsKey(s)) {
-				s+=" ";
-			}
 			board.put(s, Integer.parseInt(s1));
 		}
 		sc.close();
@@ -166,7 +163,7 @@ public class Leaderboard extends BasicGameState{
 			e.printStackTrace();
 		}
 		for (Entry<String, Integer> line : board.entrySet()) {
-			out.println(line.getKey().trim());
+			out.println(line.getKey());
 			out.println(Integer.toString(line.getValue()));
 		}
 		out.close();
@@ -181,14 +178,14 @@ public class Leaderboard extends BasicGameState{
 			lastLineY[i]=lines.get(i).getY();
 		}
 		
+		image = new HashMap<String,String>();
 		try {
 			sc = new Scanner (new File ("./leaderboard/profile_pic"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		for (int i=0;i<15;i++) {
-			profilePicName[i]=sc.nextLine();
-			profilePic[i]=new Image(profilePicName[i]);
+		while(sc.hasNextLine()) {
+			image.put(sc.nextLine(),sc.nextLine());
 		}
 		sc.close();
 		
@@ -236,23 +233,25 @@ public class Leaderboard extends BasicGameState{
 		int i=0;
 		for (Entry<String, Integer> line : board.entrySet()) {
 			if (i>=start && i<end) {
-				String s1=line.getKey().trim();
+				String s1=line.getKey();
 				String s2=Integer.toString(line.getValue());
 				double ratio=1;
-				if (profilePic[i].getHeight()>=profilePic[i].getWidth()) {
-					ratio = 70.0/profilePic[i].getHeight();
-				}else if (profilePic[i].getHeight()<profilePic[i].getWidth()) {
-					ratio = 70.0/profilePic[i].getWidth();
+				Image pic = new Image(image.get(s1));
+				s1=s1.trim();
+				if (pic.getHeight()>=pic.getWidth()) {
+					ratio = 70.0/pic.getHeight();
+				}else if (pic.getHeight()<pic.getWidth()) {
+					ratio = 70.0/pic.getWidth();
 				}
 				if (move&&!stopMove) {	
 					font.drawString(334-s1.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s1);
 					font.drawString(524-s2.length()*9, lastNumberY[i]-(ye-lastY)*16*player/73+10, s2);
-					profilePic[i].draw(130,lastNumberY[i]-(ye-lastY)*16*player/73+10,(float)(profilePic[i].getWidth()*ratio),(float)(profilePic[i].getHeight()*ratio));
+					pic.draw(130,lastNumberY[i]-(ye-lastY)*16*player/73+10,(float)(pic.getWidth()*ratio),(float)(pic.getHeight()*ratio));
 				}
 				else {
 					font.drawString(334-s1.length()*9, lastNumberY[i]+10, s1);
 					font.drawString(524-s2.length()*9, lastNumberY[i]+10, s2);
-					profilePic[i].draw(130,lastNumberY[i]+10,(float)(profilePic[i].getWidth()*ratio),(float)(profilePic[i].getHeight()*ratio));
+					pic.draw(130,lastNumberY[i]+10,(float)(pic.getWidth()*ratio),(float)(pic.getHeight()*ratio));
 				}
 			}
 			i++;
@@ -362,11 +361,13 @@ public class Leaderboard extends BasicGameState{
 		            	d="./profile_picture/"+file.getName();
 			            dest = Paths.get(d);
 						Files.copy(file.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
-						profilePic[n]=new Image(d);
-						profilePicName[n] = d;
+						image.replace((String) board.keySet().toArray()[n],d);
+						
 						out = new PrintWriter (new FileWriter("./leaderboard/profile_pic"));
-						for (int i=0;i<15;i++) {
-							out.println(profilePicName[i]);
+						
+						for (Entry<String, String> line : image.entrySet()) {
+							out.println(line.getKey());
+							out.println(line.getValue());
 						}
 						out.close();
 					} catch (IOException e) {
@@ -397,10 +398,27 @@ public class Leaderboard extends BasicGameState{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		while (board.containsKey(s)) {
+			s+=" ";
+		}
 		out.println(s);
 		out.println(i);
 		out.close();
+		
 	}
-
+	public static void write(String s) {
+		
+		try {
+			out = new PrintWriter (new FileWriter("./leaderboard/profile_pic",true));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while (image.containsKey(s)) {
+			s+=" ";
+		}
+		out.println(s);
+		out.println("./profile_picture/default.png");
+		out.close();
+	}
 	
 }

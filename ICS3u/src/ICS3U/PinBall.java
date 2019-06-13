@@ -16,6 +16,7 @@ public class PinBall extends StateBasedGame{
 	public static final int exit = 5;
 	public static final int foryou = 6;
 	public static final int rule = 7;
+	public static final int funny = 8;
 
 	public static AppGameContainer appgc;
 
@@ -33,6 +34,7 @@ public class PinBall extends StateBasedGame{
 		this.addState(new Exit(exit));
 		this.addState(new ForYou(foryou));
 		this.addState(new Rule(rule));
+		this.addState(new Funny(funny));
 		Game.soundOn=true;
 	}
 
@@ -42,7 +44,7 @@ public class PinBall extends StateBasedGame{
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
 		//gc.setShowFPS(false);
-		this.enterState(menu);
+		this.enterState(exit);
 	}
 	
 	/**

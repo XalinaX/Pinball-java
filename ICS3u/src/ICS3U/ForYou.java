@@ -25,7 +25,7 @@ public class ForYou extends BasicGameState{
 	private int page;
 	private Rectangle rec;
 	private Music chengdu;
-	public static boolean enter;
+	private boolean enter;
 	
 	public ForYou(int foryou) {
 	}

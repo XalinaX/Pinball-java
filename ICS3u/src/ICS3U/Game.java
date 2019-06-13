@@ -1,5 +1,8 @@
 package ICS3U;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -331,6 +334,7 @@ public class Game extends BasicGameState{
 		restart.draw(280,0,60,60);
 		
 		if (draw) {
+			Leaderboard.write(username);
 			Leaderboard.write(username, userScore);
 			GameEnd.score =Integer.toString(userScore);
 			try {
@@ -608,6 +612,9 @@ public class Game extends BasicGameState{
 					if (c.stop) {
 						stopCount++;
 					}
+					if (c.py>=217) {
+						c.py=216;
+					}
 				}
 				if (songend) {
 					mode=2;
@@ -734,6 +741,9 @@ public class Game extends BasicGameState{
 					}
 					if (c.stop) {
 						stopCount++;
+						if (c.py>=217) {
+							c.py=216;
+						}
 					}
 					if (((10/27.0*c.px+2300/27.0>c.py&&350>=c.px) || (3100/9.0-10/27.0*c.px>c.py&&c.px>=350)) && c.px>55 && c.px<645) {
 						

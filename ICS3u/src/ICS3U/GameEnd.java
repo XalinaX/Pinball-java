@@ -140,8 +140,10 @@ public class GameEnd extends BasicGameState {
 				sbg.getState(PinBall.leaderboard).init(gc, sbg);
 				sbg.enterState(PinBall.leaderboard);
 			}else if (xpos>140 && xpos<200) {
-				// restart a new game button
+				// new game button
 				sbg.enterState(PinBall.login);
+			}if (xpos>640 && xpos<700) {
+				sbg.enterState(PinBall.exit);
 			}
 			clicked=false;
 		}
