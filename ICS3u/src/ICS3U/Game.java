@@ -462,6 +462,7 @@ public class Game extends BasicGameState{
 				clicked=true;
 			}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
 				if (xpos>640 && xpos<700) {
+					sbg.getState(PinBall.exit).init(gc, sbg);
 					sbg.enterState(PinBall.exit);
 				}else if (xpos>0 && xpos<60){
 					if (soundOn) {

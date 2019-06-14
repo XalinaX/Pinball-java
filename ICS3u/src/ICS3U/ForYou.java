@@ -55,7 +55,7 @@ public class ForYou extends BasicGameState{
 		chengdu=new Music("./songs/chengdu.wav");
 		enter=true;
 		happy = new SpriteSheet("./image/forYou/happyEveryday.png",100,160);
-		happyAnimation = new Animation(happy,500);
+		happyAnimation = new Animation(happy,70);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class ForYou extends BasicGameState{
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		if (page==6) {
 			happyAnimation.draw(0,0,700,1200);
-		}else {
+		}else if(page<6){
 			g.setColor(Color.black);
 			text.get(page).draw(0,0,700,1200);
 			g.fill(rec);
@@ -93,18 +93,14 @@ public class ForYou extends BasicGameState{
 				page++;
 				rec.setCenterY(650);
 				try {
-					TimeUnit.MILLISECONDS.sleep(2000);
+					TimeUnit.MILLISECONDS.sleep(2050);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}else {
-				try {
-					TimeUnit.MILLISECONDS.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				Exit.scene=3;
-				sbg.enterState(PinBall.exit, new FadeInTransition(), new FadeOutTransition());
+				chengdu.stop();
+				Exit.scene=2;
+				sbg.enterState(PinBall.exit, new FadeOutTransition(), new FadeInTransition());
 			}
 		}
 	}

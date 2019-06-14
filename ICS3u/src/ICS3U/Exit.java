@@ -96,13 +96,15 @@ public class Exit extends BasicGameState{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					sbg.enterState(PinBall.funny,new FadeInTransition(), new FadeOutTransition());
+					sbg.getState(PinBall.funny).init(gc, sbg);
+					sbg.enterState(PinBall.funny,new FadeOutTransition(), new FadeInTransition());
 				}else if (1200-Mouse.getY()>730 && 1200-Mouse.getY()<960) {
 					try {
 						TimeUnit.MILLISECONDS.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					sbg.getState(PinBall.foryou).init(gc, sbg);
 					sbg.enterState(PinBall.foryou,new FadeOutTransition(), new FadeInTransition());
 				}
 			}

@@ -130,7 +130,7 @@ public class GameEnd extends BasicGameState {
 		}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>0 && ypos<60) {
 			// exit button
 			if (xpos>640 && xpos<700) {
-				gc.exit();
+				sbg.enterState(PinBall.exit);
 				try {
 					TimeUnit.MILLISECONDS.sleep(100);
 				} catch (InterruptedException e) {
@@ -151,8 +151,6 @@ public class GameEnd extends BasicGameState {
 			}else if (xpos>140 && xpos<200) {
 				// new game button
 				sbg.enterState(PinBall.login);
-			}if (xpos>640 && xpos<700) {
-				sbg.enterState(PinBall.exit);
 			}
 			clicked=false;
 		}

@@ -27,12 +27,17 @@ public class Funny extends BasicGameState{
 		enter=true;
 		chillcity=new Music("./songs/ChillCity.ogg");
 		page=0;
+		video=new SpriteSheet[12];
+		video[0] = new SpriteSheet("./image/funny/1.png",100,180);
+		video[1] = new SpriteSheet("./image/funny/1(2).png",100,180);
+		video[2] = new SpriteSheet("./image/funny/1(3).png",100,160);
+		
 	}
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
 		g.setColor(Color.black);
-		video[page].draw(0,0,700,1200);
+		video[page].draw(0,0,100,1200);
 	}
 
 	@Override
