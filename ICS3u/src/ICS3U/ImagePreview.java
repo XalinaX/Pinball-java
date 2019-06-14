@@ -6,6 +6,10 @@ import java.beans.*;
 import java.awt.*;
 import java.io.File;
  
+/**
+ * set the view of file chooser
+ * show the image that user clicked in file chooser
+ */
 public class ImagePreview extends JComponent
                           implements PropertyChangeListener {
     ImageIcon thumbnail = null;
@@ -16,6 +20,9 @@ public class ImagePreview extends JComponent
         fc.addPropertyChangeListener(this);
     }
  
+    /**
+     * load the image from the file
+     */
     public void loadImage() {
         if (file == null) {
             thumbnail = null;
@@ -38,6 +45,9 @@ public class ImagePreview extends JComponent
         }
     }
  
+    /**
+     * check if the image file change
+     */
     public void propertyChange(PropertyChangeEvent e) {
         boolean update = false;
         String prop = e.getPropertyName();
@@ -63,6 +73,9 @@ public class ImagePreview extends JComponent
         }
     }
  
+    /**
+     * paint the image 
+     */
     protected void paintComponent(Graphics g) {
         if (thumbnail == null) {
             loadImage();

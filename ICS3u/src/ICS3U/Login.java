@@ -18,7 +18,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 /**
  * enter the user name
- * @author amy,alina
  *
  */
 public class Login extends BasicGameState implements ComponentListener{

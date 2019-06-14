@@ -41,6 +41,9 @@ public class GameEnd extends BasicGameState {
 	public GameEnd(int i) {
 	}
 
+	/**
+	 * initialize the game screen
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame arg1) throws SlickException {
 		// initialize components
@@ -81,6 +84,9 @@ public class GameEnd extends BasicGameState {
 		soundOn=true;
 	}
 
+	/**
+	 * draw all the component to the screen
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame arg1, Graphics g) throws SlickException {
 		// drawing methods
@@ -105,6 +111,9 @@ public class GameEnd extends BasicGameState {
 		home.draw(140,0,60,60);
 	}
 
+	/**
+	 * update the data of the game and call render again
+	 */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
 		// position of animation

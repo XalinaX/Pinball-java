@@ -40,6 +40,7 @@ public class Leaderboard extends BasicGameState{
 
 	private java.awt.Font awtFont2;
 	
+	//position of the components
 	private int xs;
 	private int ys;
 	private int ye;
@@ -56,6 +57,7 @@ public class Leaderboard extends BasicGameState{
 	private float[] lastLineY;
 	public static Map<String,Integer> board;
 	
+	//color for the scroll bar
 	private Color gray = new Color(80,80,80);
 	private Color gray1 = new Color(55,55,55);
 	private Color gray2 = new Color(220,220,220);
@@ -64,6 +66,7 @@ public class Leaderboard extends BasicGameState{
 	private Scanner sc;
 	private static PrintWriter out;
 	
+	//number images
 	private Image[] number = new Image[15];
 	public static Map<String,String> image;
 	private float[] lastNumberY = new float[15];
@@ -134,6 +137,7 @@ public class Leaderboard extends BasicGameState{
 		awtFont1 = new java.awt.Font("Arial", java.awt.Font.BOLD, 60);
 		font1 = new TrueTypeFont(awtFont1, false);	
 		
+		//read in all the information from file
 		try {
 			sc = new Scanner (new File ("./leaderboard/leaderboard.txt"));
 		} catch (FileNotFoundException e) {
@@ -157,6 +161,7 @@ public class Leaderboard extends BasicGameState{
 			player=5;
 		}
 		
+		//print the sorted board
 		try {
 			out = new PrintWriter (new FileWriter("./leaderboard/leaderboard.txt"));
 		} catch (IOException e) {
@@ -231,6 +236,7 @@ public class Leaderboard extends BasicGameState{
 			gr.draw(lines.get(i));
 		}
 		int i=0;
+		//draw all the component after every move
 		for (Entry<String, Integer> line : board.entrySet()) {
 			if (i>=start && i<end) {
 				String s1=line.getKey();
@@ -321,6 +327,7 @@ public class Leaderboard extends BasicGameState{
 		if(Mouse.isButtonDown(0)&&mouseOn) {
 			clicked=true;
 		}
+		//reset the position of every line
 		if (Mouse.isButtonDown(0)&&clicked) {
 			if(firstClick) {
 				stopMove=false;
@@ -348,6 +355,8 @@ public class Leaderboard extends BasicGameState{
 			stopMove=true;
 			firstClick=true;
 		}
+		
+		//file chooser
 		if (Mouse.isButtonDown(0) && xs<200 && xs>130 && (ys-lastLineY[0]+160)%160>50 && (ys-lastLineY[0]+160)%160<120
 				&& ys>210 && ys<1010) {
 			int n=(int)(ys-lastLineY[0]+160)/160;
@@ -392,6 +401,11 @@ public class Leaderboard extends BasicGameState{
 	                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 	
+	/**
+	 * write to the file
+	 * @param s - username
+	 * @param i - score
+	 */
 	public static void write(String s, int i) {
 		try {
 			out = new PrintWriter (new FileWriter("./leaderboard/leaderboard.txt",true));
@@ -406,6 +420,11 @@ public class Leaderboard extends BasicGameState{
 		out.close();
 		
 	}
+	
+	/**
+	 * wirite to the profile photo file
+	 * @param s - username
+	 */
 	public static void write(String s) {
 		
 		try {

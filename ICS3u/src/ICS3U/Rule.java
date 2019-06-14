@@ -11,7 +11,10 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-
+/**
+ * display the rule of the game
+ *
+ */
 public class Rule extends BasicGameState {
 	int i = 1200;
 	public static int lastState;
@@ -29,9 +32,12 @@ public class Rule extends BasicGameState {
 
 	}
 
+	/**
+	 * initialize
+	 */
 	@Override
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
+		
 		awtFont = new java.awt.Font("Arial", java.awt.Font.BOLD, 31);
 		font = new TrueTypeFont(awtFont, false);
 		rule = new Image("./image/rules.png");
@@ -47,7 +53,7 @@ public class Rule extends BasicGameState {
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-		// TODO Auto-generated method stub
+		//print the rules
 		rule.draw(220,33,250,100);
 
 		font.drawString(40, i,"START");
@@ -101,7 +107,7 @@ public class Rule extends BasicGameState {
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
+		// return to the last page		
 		if (i > 142)
 			i-=2;
 		input = gc.getInput();

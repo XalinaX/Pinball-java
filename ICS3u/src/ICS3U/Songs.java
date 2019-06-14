@@ -14,6 +14,10 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+/**
+ * the background sound
+ *load all the piano notes
+ */
 public class Songs {
 	protected int[] played = new int[8];
 	protected String[] songs = {"./songs/JuHuaTai","./songs/BanDaoTieHe","./songs/DaoXiang",
@@ -28,6 +32,7 @@ public class Songs {
 	static AudioInputStream audioInputStream;
 	public static int num;
 	
+	//map the audio file with the number
 	public Songs(){
 		notesmap = new HashMap<String, String>();
 				
@@ -64,11 +69,15 @@ public class Songs {
 		songStart=false;
 	}
 	
+	/**
+	* playing notes one by one by reading code from a file
+	*/
 	public void play(){
 		if (!Game.soundOn) {
 			linenum=1;
 			return;
 		}
+		//if all the songs played once, set the array to zero
 		haveSong=false;
 		for (int i=0;i<8;i++) {
 			if (played[i]==0) {
@@ -81,6 +90,7 @@ public class Songs {
 			}
 		}
 		
+		//if no song is playing, randomly choose a song
 		if (!songStart) {
 			num = (int)(Math.random()*8);
 			while(played[num]!=0) {
@@ -92,6 +102,7 @@ public class Songs {
 			linenum=1;
 			Game.guessed=false;
 		}
+		//play the song
 		try (Stream<String> lines = Files.lines(Paths.get(song))){
 		    line = lines.skip(linenum-1).findFirst().get();
 			audioInputStream = AudioSystem.getAudioInputStream(new File(notesmap.get(line)).getAbsoluteFile());

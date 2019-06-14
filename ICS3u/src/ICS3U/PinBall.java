@@ -43,8 +43,8 @@ public class PinBall extends StateBasedGame{
 	 */
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
-		//gc.setShowFPS(false);
-		this.enterState(exit);
+		gc.setShowFPS(false);
+		this.enterState(foryou);
 	}
 	
 	/**

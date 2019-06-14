@@ -74,7 +74,6 @@ public class Ball {
 	Vec2d N1;
 	
 	public void collide(Vec2d l, boolean elastic) {
-		
 		hasCollide=true;
 		if (elastic) {
 			double ratio = Math.sqrt(1/(l.x*l.x+l.y*l.y));
@@ -87,7 +86,7 @@ public class Ball {
 		else {
 			v1 = new Vec2d((float)this.vx,(float)this.vy);
 			vr1 = new Vec2d(-v1.x,-v1.y);
-			proj1 = new Vec2d(l.x*vr1.dot(l)/l.dot(l),l.y*vr1.dot(l)/l.dot(l));
+			proj1 = new Vec2d(l.x*vr1.dot(l)/l.dot(l),l.y*vr1.dot(l)/l.dot(l));//projection
 			N1 = v1.add(proj1);
 			N1=N1.add(proj1);
 			double ratio = Math.sqrt(1/(N1.x*N1.x+N1.y*N1.y));
@@ -189,6 +188,7 @@ public class Ball {
 	 * circle line collision
 	 * @param s - start point of line
 	 * @param e - end point of line
+	 * @param isWall - true if the line is a wall
 	 * @return true if collide
 	 */
 	public boolean circleLine(Vec2d s, Vec2d e, boolean isWall) {
@@ -222,6 +222,7 @@ public class Ball {
 	/**
 	 * circle point collision
 	 * @param p - coordinate of the point
+	 * @param isWall - true if the point is on a wall
 	 * @return true if collide
 	 */
 	public boolean circlePoint(Vec2d p,boolean isWall) {

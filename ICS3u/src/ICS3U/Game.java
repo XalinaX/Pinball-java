@@ -222,7 +222,6 @@ public class Game extends BasicGameState{
 	/**
 	 * draw all the component to the screen
 	 */
-	
 	int num3=0;
 	int num1=1;
 	int num2=2;
@@ -370,9 +369,6 @@ public class Game extends BasicGameState{
 			fireball.draw(fx,fy,fwidth,fheight);
 		}
 		
-		g.setColor(Color.white);
-		g.drawString(Integer.toString(stopCount), 70, 40);
-		g.drawString(Integer.toString(start), 70, 60);
 		if (addScore) {
 			font2.drawString(620, 180, "+300",Color.white);
 			count1++;
