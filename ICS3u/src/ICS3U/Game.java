@@ -17,7 +17,7 @@ import org.lwjgl.input.*;
  * @author alina,amy
  */
 public class Game extends BasicGameState{
-	/**the white balls that fly around the screen*/
+	//blocks and balls
 	public static LinkedList<Ball> balls;
 	public static LinkedList<PolyBlock> polyblocks;
 	public static LinkedList<Wall> walls;
@@ -32,7 +32,7 @@ public class Game extends BasicGameState{
 	public static Circle homeB;
 	public static Circle musicB;
 	protected Circle stopB;
-	
+	//game variables
 	public static int xpos;
 	public static int ypos;
 	public static int start;
@@ -41,11 +41,13 @@ public class Game extends BasicGameState{
 	public static int round;
 	public static boolean hasSpecial;
 
+	//fonts
 	private java.awt.Font awtFont;
 	private TrueTypeFont font;
 	private java.awt.Font awtFont1;
 	private TrueTypeFont font1;
 	
+	//icon images
 	public static Image exit;
 	public static Image on;
 	public static Image off;
@@ -63,22 +65,24 @@ public class Game extends BasicGameState{
 	public static int fwidth;
 	public static int fheight;
 	
+	//disappear "animation"
 	public static Image[] disappears;
 	public static LinkedList<Integer> disappear;
 	public static LinkedList<Vec2d> disappearPos;
 	
+	//buttons
 	public static boolean soundOn;
 	public static boolean clicked;
 	public static boolean boomOn;
 	public static boolean shiningOn;
 	public static boolean fireballOn;
-
 	public static boolean gameover;
 	public static boolean gameover1;
 	public static boolean draw;
 	public static Image over;
 	public static Image over1;
 
+	//song
 	public static Songs songs;
 	public static int count;
 	public static int mode;
@@ -117,6 +121,7 @@ public class Game extends BasicGameState{
 		Songs.linenum=1;
 		mode=0;
 		count=0;
+		//name of the songs
 		songImage = new Image[8];
 		songImage[0] = new Image("./songs/image/jht.png");
 		songImage[1] = new Image("./songs/image/bdth.png");
@@ -126,7 +131,7 @@ public class Game extends BasicGameState{
 		songImage[5] = new Image("./songs/image/gbqq.png");
 		songImage[6] = new Image("./songs/image/dnxk.png");
 		songImage[7] = new Image("./songs/image/hckz.png");
-
+		//songs
 		songtip = new Image("./songs/image/songtip.gif");
 		songtip1 = new Image("./songs/image/songtip1.gif");
 		wrong = new Image("./songs/image/wrong.png");
@@ -139,7 +144,7 @@ public class Game extends BasicGameState{
 		checked=false;
 		count1=0;
 		addScore=false;
-		
+		//images
 		exit = new Image("./image/exit.gif");
 		on = new Image("./image/sound/on.gif");
 		off = new Image("./image/sound/off.gif");
@@ -175,7 +180,7 @@ public class Game extends BasicGameState{
 			disappears[i-1]=new Image(s);
 		}
 		
-		
+		//some fonts
 		awtFont = new java.awt.Font("Arial", java.awt.Font.BOLD, 20);
 		font = new TrueTypeFont(awtFont, false);
 		awtFont1 = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 35);
@@ -276,6 +281,7 @@ public class Game extends BasicGameState{
 			g.drawString(p.s,p.poly.getCenterX()-3*(2+(int)Math.log10(p.score)), p.poly.getCenterY()-10);
 		}
 		
+		//draw the animation of disappear(didn't use animation)
 		for (int i=0; i<disappear.size(); i++) {
 			int num = disappear.get(i);
 			Vec2d pos = disappearPos.get(i);
@@ -321,6 +327,7 @@ public class Game extends BasicGameState{
 			}
 		}
 		
+		//the buttons on the top of the screen
 		exit.draw(640,0,60,60);
 		if (soundOn) {
 			on.draw(0,0,60,60);
@@ -352,7 +359,7 @@ public class Game extends BasicGameState{
 			over1.draw(620,300,70,70);
 		}
 		
-		
+		//the boom and the lightenning button
 		if (boomOn) {
 			boom.draw(10,1080,80,110);
 		}else {
@@ -368,7 +375,7 @@ public class Game extends BasicGameState{
 		if (fireballOn) {
 			fireball.draw(fx,fy,fwidth,fheight);
 		}
-		
+		//if the song the user guessed is right, display "+300" beside the score
 		if (addScore) {
 			font2.drawString(620, 180, "+300",Color.white);
 			count1++;
@@ -378,6 +385,8 @@ public class Game extends BasicGameState{
 				userScore+=300;
 			}
 		}
+		
+		//different mode - the instruction and the guess page
 		if (mode==0) {
 			g.setColor(transparentGray);
 			g.fillRect(0, 0, 700, 1200);
@@ -422,7 +431,7 @@ public class Game extends BasicGameState{
 	boolean mouseDown=false;
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		if (mode==0) {
+		if (mode==0) {//instruction page
 			if (Mouse.isButtonDown(0)&&Mouse.getX()<500&&Mouse.getX()>200&&
 					1200-Mouse.getY()>930&&1200-Mouse.getY()<1070) {
 				mouseDown=true;
@@ -431,8 +440,9 @@ public class Game extends BasicGameState{
 				mode=1;
 			}
 		}
-		else if (mode==1) {
+		else if (mode==1) {//game mode
 			gameover1=false;
+			//check if any of the block hit the top line(game over)
 			for (int ind=0;ind<polyblocks.size();ind++) {
 				if (polyblocks.get(ind).poly.getCenterY()<260) {
 					gameover=true;
@@ -449,14 +459,18 @@ public class Game extends BasicGameState{
 					gameover1=true;
 				}
 			}
+			//if the special block hit the top line, it will disappear
 			for (int ind=0;ind<specialblocks.size();ind++) {
 				if (specialblocks.get(ind).yi<260) {
 					specialblocks.remove(specialblocks.get(ind));
 				}
 			}
+			
+			// get the user input
 			xpos=Mouse.getX();
 			ypos=1200-Mouse.getY();
 			Input input = gc.getInput();
+			//check if the user click on any "button"
 			if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)&&((ypos>0 && ypos<60&&((xpos>0&&xpos<340)||(xpos>640&&xpos<700)))||
 					(start!=1&&start!=2&&ypos>1110 && ypos<1190&&((xpos>10&&xpos<90)||(xpos<690&&xpos>610))))) {
 				clicked=true;
@@ -485,6 +499,7 @@ public class Game extends BasicGameState{
 				}
 				clicked=false;
 			}else if (!Mouse.isButtonDown(0)&&clicked&& ypos>1110 && ypos<1190&&start!=1&&start!=2){
+				//boom 
 				if (xpos>10&&xpos<90) {
 					if (boomOn) {
 						boomOn=false;
@@ -510,6 +525,7 @@ public class Game extends BasicGameState{
 				clicked=false;
 			}
 			if (fireballOn) {
+				//lightening buttton
 				if(fx>706) {
 					fireballOn=false;
 					for (int ind=0;ind<polyblocks.size();ind++) {
@@ -533,7 +549,7 @@ public class Game extends BasicGameState{
 				deleteLine();
 			}
 			if (start==2) {
-				
+				//the balls are at the top of the screen
 				stopCount=0;
 				for (int i=0; i<balls.size(); i++) {
 					Ball c = balls.get(i);
@@ -575,6 +591,7 @@ public class Game extends BasicGameState{
 							c.cir.setCenterY(c.py);
 						}
 					}
+					//if the ball get out of the screen, reset the location
 					if (c.py<0) {
 						c.stop=true;
 					}
@@ -600,6 +617,7 @@ public class Game extends BasicGameState{
 						c.setLocation(100, 100);
 						c.setVelocity(0.6,0.6);
 					}
+					//add the speed on y-axis
 					if (c.py<=80 && (c.vy<0.8 || (c.vx*c.vx+c.vy*c.vy<1))){
 						c.vy+=0.0025;
 					}
@@ -613,9 +631,11 @@ public class Game extends BasicGameState{
 						c.py=216;
 					}
 				}
+				//if the song end, guess the song
 				if (songend) {
 					mode=2;
 				}
+				//if all the ball if at the top of the screen, stop moving and wait for user's input
 				if (stopCount==balls.size()) {
 					start=-1;
 					for (int ind=0;ind<polyblocks.size();ind++) {
@@ -634,6 +654,7 @@ public class Game extends BasicGameState{
 			}
 			//mouse clicked
 			if (Mouse.isButtonDown(0) && start!=1&& start!=2) {
+				//wait for user to select the way of the ball
 				start=-1;
 				xpos=Mouse.getX();
 				ypos=1200-Mouse.getY();
@@ -644,6 +665,7 @@ public class Game extends BasicGameState{
 			}
 			//mouse released
 			else if (start==0) {
+				//drop the ball with some distance between
 				start=1;
 				stopCount=0;
 				for (int i=0; i<balls.size(); i++) {
@@ -656,6 +678,7 @@ public class Game extends BasicGameState{
 			}
 			//start the collisions
 			if(start==1){
+				//balls start bouncing around
 				if (Game.count%300==0) {
 					Game.songs.play();
 				}
@@ -671,6 +694,7 @@ public class Game extends BasicGameState{
 						c.setLocation(350,230+c.radius);
 						c.firstTime=false;
 					}
+					//increase the speed on Y-axis
 					if (c.vy<0 && c.px>55 && c.px<645) {
 						c.vy+=0.003;
 					}
@@ -686,10 +710,12 @@ public class Game extends BasicGameState{
 					if ((c.px<35 || c.px>665) && (c.vy>-0.8 || (c.vx*c.vx+c.vy*c.vy<1))) {
 						c.vy-=0.002;
 					}
+					// move the ball based on the speed
 					c.px+=c.vx;
 					c.py+=c.vy;
 					c.cir.setCenterX(c.px);
 					c.cir.setCenterY(c.py);
+					//check all tht collision
 					for (int ind=0; ind<walls.size(); ind++) {
 						Wall w = walls.get(ind);
 						if (ind==2) {
@@ -736,12 +762,15 @@ public class Game extends BasicGameState{
 							}
 						}
 					}
+					//check if all the ball are at the top
 					if (c.stop) {
 						stopCount++;
 						if (c.py>=217) {
 							c.py=216;
 						}
 					}
+					
+					// if the ball go to some strange place, bring it back
 					if (((10/27.0*c.px+2300/27.0>c.py&&350>=c.px) || (3100/9.0-10/27.0*c.px>c.py&&c.px>=350)) && c.px>55 && c.px<645) {
 						
 						if (c.py<=220 && c.px<450 && c.px>250) {
@@ -790,6 +819,7 @@ public class Game extends BasicGameState{
 						c.setVelocity(0.6,0.6);
 					}
 				}
+				//if all the balls are at the top, change the start to 2;
 				if (stopCount==balls.size()) {
 					start=2;
 					for (int i=0; i<balls.size(); i++) {
@@ -801,7 +831,7 @@ public class Game extends BasicGameState{
 				}
 			}
 		}
-		else if (mode==2) {
+		else if (mode==2) {//guess the song
 			Input in = gc.getInput();
 			if ((in.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)||Mouse.isButtonDown(0))&&Mouse.getX()<490&&Mouse.getX()>210
 					&&(1200-Mouse.getY()>430&&1200-Mouse.getY()<570
@@ -819,7 +849,7 @@ public class Game extends BasicGameState{
 				ask=true;
 				mouseDown=false;
 			}
-			if (checked) {
+			if (checked) {//check the answer
 				try {
 					TimeUnit.MILLISECONDS.sleep(800);
 				} catch (InterruptedException e) {
@@ -871,7 +901,7 @@ public class Game extends BasicGameState{
 	}
 	
 	/**
-	 * generate some circle blocks
+	 * generate some circle blocks and make sure it does not overlap
 	 * @param num - the number of blocks
 	 * @param y1 - the start location of the blocks
 	 * @param y2 - the end location of the blocks
@@ -913,7 +943,7 @@ public class Game extends BasicGameState{
 	}
 	
 	/**
-	 * generate some polygon blocks
+	 * generate some polygon blocks and make sure it does not overlap
 	 * @param num - the number of blocks
 	 * @param y1 - the start location of the blocks
 	 * @param y2 - the end location of the blocks
@@ -954,7 +984,7 @@ public class Game extends BasicGameState{
 	}
 	
 	/**
-	 * delete the blocks on the last line
+	 * delete the blocks on the last line and bring every block down one line(lightening button)
 	 */
 	public static void deleteLine() {
 		for (int ind=0;ind<polyblocks.size();ind++) {
@@ -971,5 +1001,4 @@ public class Game extends BasicGameState{
 			s.collideWithFireball();
 		} 
 	}
-
 }

@@ -55,7 +55,7 @@ public class ForYou extends BasicGameState{
 		chengdu=new Music("./songs/chengdu.wav");
 		enter=true;
 		happy = new SpriteSheet("./image/forYou/happyEveryday.png",100,160);
-		happyAnimation = new Animation(happy,70);
+		happyAnimation = new Animation(happy,60);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class ForYou extends BasicGameState{
 	 * check if Ms Wong is happy
 	 */
 	@Override
-	public void update(GameContainer arg0, StateBasedGame sbg, int arg2) throws SlickException {
+	public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
 		if (enter) {
 			chengdu.play();
 			enter=false;
@@ -99,6 +99,7 @@ public class ForYou extends BasicGameState{
 				}
 			}else {
 				chengdu.stop();
+				sbg.getState(PinBall.exit).init(gc, sbg);
 				Exit.scene=2;
 				sbg.enterState(PinBall.exit, new FadeOutTransition(), new FadeInTransition());
 			}
