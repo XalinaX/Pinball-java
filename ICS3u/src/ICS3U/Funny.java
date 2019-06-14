@@ -22,7 +22,7 @@ public class Funny extends BasicGameState{
 	public Funny(int funny) {
 	}
  
-	@Override
+	@Override 
 	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
 		enter=true;
 		chillcity=new Music("./songs/ChillCity.ogg");
