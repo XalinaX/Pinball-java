@@ -25,7 +25,7 @@ public class Funny extends BasicGameState{
 	private SpriteSheet[] video;
 	private Animation[] videoAnimation;
 	// {6550,6300,6200,4700,4450,1800,2700,2700};
-	private int[] time= {3500,3500,3400,4100,4290,6200,5020,4600,2080,3100,3500};// the time of each video
+	private int[] time= {3500,3500,3420,4100,4290,6200,5020,4600,2080,3100,3500};// the time of each video
 	private int page;
 	private int count;
 	private Image[] text;
@@ -125,7 +125,7 @@ public class Funny extends BasicGameState{
 			videoAnimation[10].draw(350,500,300,480);
 
 		}else if (page==10) {
-			text[10].draw(30,960,640,250);
+			text[10].draw(30,950,640,260);
 			text[10].setRotation(5);
 			other[3].draw(40,0,400,200);
 			other[3].setRotation(357);
