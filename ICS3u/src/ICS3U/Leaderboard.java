@@ -211,6 +211,7 @@ public class Leaderboard extends BasicGameState{
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics gr) throws SlickException {
+		
 		if (move) {
 			if (Math.round(lastCenterY+ye-lastY-rec.getHeight()/2)>=240 && Math.round(lastCenterY+ye-lastY+rec.getHeight()/2)<=970) {
 				rec.setCenterY(lastCenterY+ye-lastY);
@@ -297,6 +298,8 @@ public class Leaderboard extends BasicGameState{
 		gr.fillRect(50, 1010, 600, 50);
 		
 		back.draw(20,20,60,60);
+		font.drawString(70, 1100, "click the image beside you name",Color.white);
+		font.drawString(160, 1150, "to change the photo",Color.white);
 	}
 	
 	/**

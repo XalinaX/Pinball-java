@@ -37,14 +37,11 @@ public class Login extends BasicGameState implements ComponentListener{
 	private String str;
 
 	public static Image exit;
-	public static Image on;
-	public static Image off;
 	public static Image home;
 	public static Image rank;
 	public static Image enter;
 	public static Image help;
 	
-	public static boolean soundOn;
 	public static boolean clicked;
 	public static boolean clicked1;
 
@@ -82,11 +79,6 @@ public class Login extends BasicGameState implements ComponentListener{
 		g.fill(poly4);
 		
 		exit.draw(640,0,60,60);
-		if (soundOn) {
-			on.draw(0,0,60,60);
-		}else {
-			off.draw(0,0,60,60);
-		}
 		rank.draw(70,0,60,60);
 		enter.draw(200,750,300,110);
 		help.draw(140,0,60,60);
@@ -97,13 +89,10 @@ public class Login extends BasicGameState implements ComponentListener{
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		exit = new Image("./image/exit.gif");
-		on = new Image("./image/sound/on.gif");
-		off = new Image("./image/sound/off.gif");
 		clicked = false;
 		rank=new Image("./image/rank.gif");
 		enter = new Image("./image/enter.png");
 		help = new Image("./image/help.gif");
-		soundOn=true;
 		clicked1=false;
 		
 		str="";
@@ -159,13 +148,6 @@ public class Login extends BasicGameState implements ComponentListener{
 			if (xpos>640 && xpos<700) {
 				// exit button
 				sbg.enterState(PinBall.exit);
-			}else if (xpos>0 && xpos<60){
-				// mute button
-				if (soundOn) {
-					soundOn=false;
-				}else {
-					soundOn=true;
-				}
 			}else if (xpos>70 && xpos<130) {
 				// leaderboard button
 				Leaderboard.lastState = PinBall.login;
